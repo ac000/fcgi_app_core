@@ -1,0 +1,1 @@
+spawn-fcgi -a 127.0.0.1 -p 9191 -P /tmp/app.pid -- /path/to/app/src/app /path/to/app.cfg

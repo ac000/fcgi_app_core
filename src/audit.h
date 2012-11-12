@@ -1,0 +1,17 @@
+/*
+ * audit.h - Auditing subsystem
+ *
+ * Copyright (C) 2012		OpenTech Labs
+ *				Andrew Clayton <andrew@opentechlabs.co.uk>
+ *
+ * This software is released under the MIT License (MIT-LICENSE.txt)
+ * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
+ */
+
+#ifndef _AUDIT_H_
+#define _AUDIT_H_
+
+unsigned long long log_login(void);
+time_t get_last_login(char *from_host);
+
+#endif /* _AUDIT_H_ */

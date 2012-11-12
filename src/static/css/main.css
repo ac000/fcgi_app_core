@@ -1,0 +1,51 @@
+body {
+        font-family: sans-serif;
+}
+
+a {
+	text-decoration: none;
+}
+
+.lighter {
+	color: rgb(130, 130, 130);
+}
+
+.t_red {
+	color: rgb(255, 0, 0);
+}
+
+.t_blue {
+        color: rgb(0, 0, 255);
+}
+
+.t_yellow {
+	color: rgb(230, 160, 70);
+}
+
+.t_green {
+	color: rgb(0, 255, 0);
+}
+
+.input_error {
+	background-color: rgb(240, 180, 175);
+}
+
+.list {
+	vertical-align: top;
+}
+
+.listzebra {
+	vertical-align: top;
+	background-color: rgb(245, 250, 255);
+}
+
+#cookie_note {
+	position: relative;
+	height: 90px;
+	width: 670px;
+	margin: 100 auto;
+	background: #d4ddea;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-top: 20px;
+}

@@ -1,0 +1,8 @@
+SESSION_DB=/dev/shm/app-sessions.tct
+DB_USER=username
+DB_PASS=password
+DB_NAME=database
+MAIL_CMD=/usr/sbin/sendmail -t
+MAIL_FROM=someone@example.com
+MAIL_REPLY_TO=someone@example.com
+MAIL_SUBJECT=Application Account Activation

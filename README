@@ -1,0 +1,50 @@
+fcgi_app_core
+=============
+
+This is the core infrastructure for writing a FastCGI C application.
+
+
+Howto use
+---------
+
+Rename this repository to that of your project, then remove the .git directory.
+
+You can now continue as you would with any new project, do a clean
+initial commit etc...
+
+
+The code is in the src/ directory and builds as is. You should however first of
+all create a symlink for libctemplate to point to the directory where it's
+located. e.g
+
+If you started in ~/programming/projects when you cloned this repository,
+go back to that directory and clone libcemplate if you haven't already.
+
+    $ git clone git://github.com/opentechlabs/libctemplate.git
+
+build it
+
+    $ cd libctemplate
+    $ git checkout -b otl origin/otl
+    $ make
+    $ ln -s libctemplate.so.1.4.0 libctemplate.so
+    $ ln -s libctemplate.so.1.4.0 libctemplate.so.1
+
+Go back into the fcgi_app_core repository and create the symlink
+
+    $ cd ../fcgi_app_core/src
+    $ ln -s ../../libctemplate libctemplate
+
+
+Other things you will need to build (with at least minimal versions)
+
+    fcgi{-devel}-2.4.0
+    glib2{-devel}-2.12.3
+    gmime{-devel}-2.2.25
+    mhash{-devel}-0.9.9
+    mysql{-devel}-5.0.77
+    tokyocabinet{-devel}-1.4.9
+
+
+You should also rename 'app' to something more descriptive. You should also
+replace/amend this README.

@@ -1,0 +1,51 @@
+This documents the available config options that can be set in
+receiptomatic.cfg
+
+Required
+========
+
+DB_NAME		The name of the application database. In the case of
+		multi-tenancy mode, this is ignored.
+DB_USER		The username for the application database.
+DB_PASS		The password for the application database user.
+
+MAIL_CMD	The command used to send email e.g
+		/usr/sbin/sendmail -f noreply@opentechlabs.net -t
+MAIL_FROM	The From address to use for email, e.g
+		noreply@opentechlabs.net
+MAIL_REPLY_TO	The address to use the the Reply-to: header, e.g
+		noreply@opentechlabs.net
+MAIL_SUBJECT	The subject to use for the email, e.g
+		Receiptomatic Account Activation
+
+SESSION_DB	Path to the tokyocabinet sessions file, e.g
+		/dev/shm/application-www-sessions.tct
+
+
+Optional
+========
+
+DB_HOST		The hostname of the database server for receiptomatic, e.g
+		db.opentechlabs.net, default is localhost
+DB_SOCKET_NAME	The name of the local socket for the database, e.g
+		/var/lib/mysql/mysql.sock, default is NULL
+DB_PORT_NUM	The port number the database is listening on, e.g
+		3306, default is 3306
+DB_FLAGS	Any extra flags to pass to the database at connection time.
+
+NR_PROCS	The number of worker processes to fork. By default, one process
+		will be forked per available cpu.
+
+MULTI_TENANT	When set to 1, this enables multi-tenancy mode.
+
+DEBUG_LEVEL	Set the debug level. While useful, the debugging can be a
+		security risk in production as it will log usernames and
+		passwords in plain text. Defaults to off (0). Set it to a
+		positive number to enable debugging. Currently there is only
+		two levels, off and on.
+
+
+Misc
+====
+
+Blank lines and lines starting with a # will be ignored.

@@ -1,0 +1,48 @@
+<html>
+<head>
+	<title>app / login</title>
+	<link href = "/static/css/main.css" rel = "stylesheet" type = "text/css" />
+</head>
+<body>
+	<center>
+<tmpl_if name = "logged_in" value = "no">
+	<big><span class = "input_error">Login Failure. Please try again</span></big><p />
+<tmpl_elsif name = "enabled" value = "no">
+	<big><span class = "input_error">Account has been disabled</span></big><p />
+</tmpl_if>
+	<big><i>Welcome to</i> <big>app</big></big><p />
+	<form action = "/login/" method = "POST">
+	<table>
+	<tbody>
+	<tr>
+		<td><big>Username </big></td>
+		<td> : <input type = "text" name = "username" size = "32" maxlength = "255"></td>
+	</tr>
+	<tr>
+		<td><big>Password </big></td>
+		<td> : <input type = "password" name = "password" size = "32" maxlength = "255"></td>
+	</tr>
+	</tbody>
+	</table>
+	<small>Restrict this session to your IP address: <input type = "checkbox" name = "restrict_ip" value = "true" checked /></small>
+	<p />
+	<input type = "submit" value = "Open Sesame" />
+	</form>
+	<p />
+	</center>
+
+	<p />
+
+	<div id = "cookie_note">
+	<small>
+	<strong>NOTE: </strong>This site requires functioning <a href = "http://en.wikipedia.org/wiki/HTTP_cookie">cookies</a>. When you log in, one cookie, "session_id" is created in your browser. This is used for security to identify you to the application during your session.
+	<p />
+	The cookie is set to last only for the current browser session (<a href = "http://en.wikipedia.org/wiki/HTTP_cookie#Session_cookie">session cookie</a>) and if you use the "logout" link, it will be removed immediately.
+	</small>
+	</div>
+
+	<footer>
+	<small>© PCCL 2012.</small>
+	</footer>
+</body>
+</html>
