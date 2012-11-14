@@ -43,7 +43,7 @@ char *username_to_name(char *username)
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 
-	who = make_mysql_safe_string(conn, username);
+	who = make_mysql_safe_string(username);
 	res = sql_query("SELECT name FROM passwd WHERE username = '%s'", who);
 	row = mysql_fetch_row(res);
 
@@ -142,7 +142,7 @@ int check_auth(void)
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 
-	username = make_mysql_safe_string(conn, get_var(qvars, "username"));
+	username = make_mysql_safe_string(get_var(qvars, "username"));
 	res = sql_query("SELECT password, enabled FROM passwd WHERE "
 			"username = '%s'", username);
 	if (mysql_num_rows(res) < 1)
@@ -478,7 +478,7 @@ void create_session(unsigned long long sid)
 	TCMAP *cols;
 	GHashTable *db_row = NULL;
 
-	username = make_mysql_safe_string(conn, get_var(qvars, "username"));
+	username = make_mysql_safe_string(get_var(qvars, "username"));
 	res = sql_query("SELECT uid, name, capabilities FROM passwd WHERE "
 			"username = '%s'", username);
 	db_row = get_dbrow(res);
