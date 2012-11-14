@@ -37,8 +37,6 @@
 #include "url_handlers.h"
 #include "audit.h"
 
-extern MYSQL *conn;
-
 /*
  * /login/
  *

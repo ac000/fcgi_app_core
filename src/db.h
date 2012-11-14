@@ -42,6 +42,8 @@
 #define sql_query(conn, fmt, ...) \
 	__sql_query((const char *)__func__, conn, fmt, ##__VA_ARGS__)
 
+extern MYSQL *conn;
+
 MYSQL *db_conn(void);
 MYSQL_RES *__sql_query(const char *func, MYSQL *conn, char *fmt, ...);
 
