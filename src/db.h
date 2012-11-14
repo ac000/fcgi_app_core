@@ -39,12 +39,12 @@
  * that to __sql_query() along with the function name of the caller for the
  * sql log.
  */
-#define sql_query(conn, fmt, ...) \
-	__sql_query((const char *)__func__, conn, fmt, ##__VA_ARGS__)
+#define sql_query(fmt, ...) \
+	__sql_query((const char *)__func__, fmt, ##__VA_ARGS__)
 
 extern MYSQL *conn;
 
 MYSQL *db_conn(void);
-MYSQL_RES *__sql_query(const char *func, MYSQL *conn, char *fmt, ...);
+MYSQL_RES *__sql_query(const char *func, char *fmt, ...);
 
 #endif /* _DB_H_ */

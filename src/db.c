@@ -61,7 +61,7 @@ MYSQL *db_conn(void)
 }
 
 /*
- * This takes a mysql connection and sql query and returns the result set.
+ * This takes a sql query and returns the result set.
  * It also takes __func__ to get the name of the calling function. It also
  * logs the query into the sql log.
  *
@@ -71,7 +71,7 @@ MYSQL *db_conn(void)
  * This function will either return a result set or NULL. Note that some
  * queries don't return result sets by design.
  */
-MYSQL_RES *__sql_query(const char *func, MYSQL *conn, char *fmt, ...)
+MYSQL_RES *__sql_query(const char *func, char *fmt, ...)
 {
 	va_list args;
 	char sql[SQL_MAX];

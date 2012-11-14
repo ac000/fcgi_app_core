@@ -44,8 +44,7 @@ char *username_to_name(char *username)
 	MYSQL_ROW row;
 
 	who = make_mysql_safe_string(conn, username);
-	res = sql_query(conn, "SELECT name FROM passwd WHERE username = '%s'",
-			who);
+	res = sql_query("SELECT name FROM passwd WHERE username = '%s'", who);
 	row = mysql_fetch_row(res);
 
 	name = strdup(row[0]);
@@ -144,7 +143,7 @@ int check_auth(void)
 	MYSQL_ROW row;
 
 	username = make_mysql_safe_string(conn, get_var(qvars, "username"));
-	res = sql_query(conn, "SELECT password, enabled FROM passwd WHERE "
+	res = sql_query("SELECT password, enabled FROM passwd WHERE "
 			"username = '%s'", username);
 	if (mysql_num_rows(res) < 1)
 		goto out;
@@ -480,8 +479,8 @@ void create_session(unsigned long long sid)
 	GHashTable *db_row = NULL;
 
 	username = make_mysql_safe_string(conn, get_var(qvars, "username"));
-	res = sql_query(conn, "SELECT uid, name, capabilities FROM passwd "
-			"WHERE username = '%s'", username);
+	res = sql_query("SELECT uid, name, capabilities FROM passwd WHERE "
+			"username = '%s'", username);
 	db_row = get_dbrow(res);
 
 	get_tenant(env_vars.host, tenant);
