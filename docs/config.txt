@@ -1,5 +1,4 @@
-This documents the available config options that can be set in
-receiptomatic.cfg
+This documents the available config options that can be set in app.cfg
 
 Required
 ========
@@ -16,7 +15,7 @@ MAIL_FROM	The From address to use for email, e.g
 MAIL_REPLY_TO	The address to use the the Reply-to: header, e.g
 		noreply@opentechlabs.net
 MAIL_SUBJECT	The subject to use for the email, e.g
-		Receiptomatic Account Activation
+		Application Account Activation
 
 SESSION_DB	Path to the tokyocabinet sessions file, e.g
 		/dev/shm/application-www-sessions.tct
@@ -25,7 +24,7 @@ SESSION_DB	Path to the tokyocabinet sessions file, e.g
 Optional
 ========
 
-DB_HOST		The hostname of the database server for receiptomatic, e.g
+DB_HOST		The hostname of the database server for the application, e.g
 		db.opentechlabs.net, default is localhost
 DB_SOCKET_NAME	The name of the local socket for the database, e.g
 		/var/lib/mysql/mysql.sock, default is NULL
