@@ -75,7 +75,7 @@ out.
 This should be pretty effective as it's improbable that an attacker will guess
 the right csrf token to use.
 
-These functions are defined in www/url_helpers.c
+These functions are defined in src/url_helpers.c
 
 
 XSS Countermeasures
@@ -110,7 +110,7 @@ be outputted to the browser as; John Doe&lt;script&gt;...&lt;&#x2F;script&gt;
 The output they would see on the screen would be as they entered it, but the
 browser won't interpret that as html.
 
-de_xss() is defined in www/utils.c
+de_xss() is defined in src/utils.c
 
 
 SQL Injection Countermeasures
