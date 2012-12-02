@@ -97,7 +97,7 @@ static char *url_decode(const char *str)
 /*
  * Given a hostname like host.example.com it returns just 'host'
  */
-void get_tenant(const char *host, char *tenant)
+char *get_tenant(const char *host, char *tenant)
 {
 	char *str;
 
@@ -107,11 +107,14 @@ void get_tenant(const char *host, char *tenant)
 		 * due to a signal handler.
 		 */
 		strcpy(tenant, "");
-		return;
+		goto out;
 	}
 
 	str = strdupa(host);
 	snprintf(tenant, sizeof(tenant), "%s", strsep(&str, "."));
+
+out:
+	return tenant;
 }
 
 /*
