@@ -17,6 +17,7 @@
 #define IS_LAST_PAGE(page, nr_pages)	(((page) == (nr_pages)) ? 1 : 0)
 
 char *get_tenant(const char *host, char *tenant);
+char *generate_hash(char *hash, int type);
 void free_avars(void);
 void free_vars(GHashTable *vars);
 void free_u_files(void);
@@ -27,7 +28,6 @@ char *get_var(GHashTable *vars, const char *key);
 void free_env_vars(void);
 void free_user_session(void);
 void set_env_vars(void);
-char *generate_activation_key(const char *email_addr);
 void send_activation_mail(const char *name, const char *address,
 			  const char *key);
 char *generate_password_hash(int hash_type, const char *password);

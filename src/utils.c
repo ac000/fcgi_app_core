@@ -111,10 +111,55 @@ char *get_tenant(const char *host, char *tenant)
 	}
 
 	str = strdupa(host);
-	snprintf(tenant, sizeof(tenant), "%s", strsep(&str, "."));
+	snprintf(tenant, TENANT_MAX + 1, "%s", strsep(&str, "."));
 
 out:
 	return tenant;
+}
+
+/*
+ * Generates a hash (currently SHA-256). using /dev/urandom as a
+ * source of entropy. The type argument should currently be passed
+ * in as SHA256, though it's currently unused.
+ */
+char *generate_hash(char *hash, int type)
+{
+	int fd;
+	int i;
+	int hbs;
+	ssize_t bytes_read;
+	char buf[1024];
+	char ht[3];
+	unsigned char *xhash;
+	MHASH td;
+
+	fd = open("/dev/urandom", O_RDONLY);
+	bytes_read = read(fd, &buf, sizeof(buf));
+	close(fd);
+
+	if (bytes_read < sizeof(buf)) {
+		/*
+		 * If we couldn't read the required amount, something is
+		 * seriously wrong. Log it and exit.
+		 */
+		d_fprintf(error_log, "Couldn't read sufficient data from "
+				"/dev/urandom\n");
+		_exit(EXIT_FAILURE);
+	}
+
+	td = mhash_init(MHASH_SHA256);
+	mhash(td, &buf, sizeof(buf));
+	xhash = mhash_end(td);
+
+	hbs = mhash_get_block_size(MHASH_SHA256);
+	memset(hash, 0, SHA256_LEN + 1);
+	for (i = 0; i < hbs; i++) {
+		sprintf(ht, "%.2x", xhash[i]);
+		strncat(hash, ht, 2);
+	}
+	free(xhash);
+
+	return hash;
 }
 
 /*
@@ -175,8 +220,6 @@ void free_u_files(void)
 	for (i = 0; i < size; i++) {
 		file_info = g_list_nth_data(u_files, i);
 		unlink(file_info->temp_file_name);
-		free(file_info->orig_file_name);
-		free(file_info->temp_file_name);
 		free(file_info->name);
 		free(file_info->mime_type);
 	}
@@ -397,10 +440,11 @@ static void process_mime_part(GMimeObject *part, gpointer user_data)
 
 		file_info = malloc(sizeof(struct file_info));
 		memset(file_info, 0, sizeof(struct file_info));
-		file_info->orig_file_name = strdup(
-					g_mime_disposition_get_parameter(
+		snprintf(file_info->orig_file_name,
+				sizeof(file_info->orig_file_name), "%s",
+				g_mime_disposition_get_parameter(
 					disposition, "filename"));
-		file_info->temp_file_name = strdup(temp_name);
+		strcpy(file_info->temp_file_name, temp_name);
 		file_info->name = strdup(g_mime_disposition_get_parameter(
 					disposition, "name"));
 		file_info->mime_type = strdup(g_mime_content_type_to_string(
@@ -666,48 +710,10 @@ void free_env_vars(void)
  */
 void free_user_session(void)
 {
-	free(user_session.tenant);
 	free(user_session.username);
 	free(user_session.name);
-	free(user_session.origin_ip);
 	free(user_session.client_id);
-	free(user_session.session_id);
-	free(user_session.csrf_token);
 	free(user_session.user_hdr);
-}
-
-/*
- * Generate a somewhat hard to guess string to hash for the users
- * activation key. We use the following:
- *
- *	email_addr|getpid()-tv_sec.tv_usec
- */
-char *generate_activation_key(const char *email_addr)
-{
-	unsigned char *hash;
-	char hash_src[384];
-	char shash[65];
-	char ht[3];
-	int hbs;
-	int i;
-	struct timespec tp;
-	MHASH td;
-
-	td = mhash_init(MHASH_SHA256);
-	clock_gettime(CLOCK_REALTIME, &tp);
-	snprintf(hash_src, sizeof(hash_src), "%s|%d-%ld.%ld", email_addr,
-					getpid(), tp.tv_sec, tp.tv_nsec);
-	mhash(td, hash_src, strlen(hash_src));
-	hash = mhash_end(td);
-	memset(shash, 0, sizeof(shash));
-	hbs = mhash_get_block_size(MHASH_SHA256);
-	for (i = 0; i < hbs; i++) {
-		sprintf(ht, "%.2x", hash[i]);
-		strncat(shash, ht, 2);
-	}
-	free(hash);
-
-	return strdup(shash);
 }
 
 /*

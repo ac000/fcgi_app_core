@@ -75,7 +75,7 @@ char *username_to_name(const char *username)
  */
 bool is_logged_in(void)
 {
-	char session_id[65];
+	char session_id[SID_LEN + 1];
 	TCTDB *tdb;
 	TDBQRY *qry;
 	TCLIST *res;
@@ -178,7 +178,7 @@ void set_user_session(void)
 	int rsize;
 	int primary_key_size;
 	char pkbuf[256];
-	char session_id[65];
+	char session_id[SID_LEN + 1];
 	char login_at[21];
 	char last_seen[21];
 	char uid[11];
@@ -213,17 +213,21 @@ void set_user_session(void)
 	tcmapiterinit(cols);
 
 	memset(&user_session, 0, sizeof(user_session));
-	user_session.tenant = strdup(tcmapget2(cols, "tenant"));
+	snprintf(user_session.tenant, sizeof(user_session.tenant), "%s",
+			tcmapget2(cols, "tenant"));
 	user_session.sid = strtoull(tcmapget2(cols, "sid"), NULL, 10);
 	user_session.uid = atoi(tcmapget2(cols, "uid"));
 	user_session.username = strdup(tcmapget2(cols, "username"));
 	user_session.name = strdup(tcmapget2(cols, "name"));
 	user_session.login_at = atol(tcmapget2(cols, "login_at"));
 	user_session.last_seen = time(NULL);
-	user_session.origin_ip = strdup(tcmapget2(cols, "origin_ip"));
+	snprintf(user_session.origin_ip, sizeof(user_session.origin_ip), "%s",
+			tcmapget2(cols, "origin_ip"));
 	user_session.client_id = strdup(tcmapget2(cols, "client_id"));
-	user_session.session_id = strdup(tcmapget2(cols, "session_id"));
-	user_session.csrf_token = strdup(tcmapget2(cols, "csrf_token"));
+	snprintf(user_session.session_id, sizeof(user_session.session_id),
+			"%s", tcmapget2(cols, "session_id"));
+	snprintf(user_session.csrf_token, sizeof(user_session.csrf_token),
+			"%s", tcmapget2(cols, "csrf_token"));
 	user_session.restrict_ip = atoi(tcmapget2(cols, "restrict_ip"));
 	user_session.capabilities = atoi(tcmapget2(cols, "capabilities"));
 
@@ -290,54 +294,10 @@ void set_user_session(void)
 }
 
 /*
- * Generate a session_id used to identify a users session.
- * It generates a SHA-256 from random data.
- */
-char *create_session_id(void)
-{
-	int fd;
-	int i;
-	int hbs;
-	ssize_t bytes_read;
-	char buf[1024];
-	char shash[65];
-	unsigned char *hash;
-	char ht[3];
-	MHASH td;
-
-	fd = open("/dev/urandom", O_RDONLY);
-	bytes_read = read(fd, buf, sizeof(buf));
-	close(fd);
-	/*
-	 * If we couldn't read the required amount, something is
-	 * seriously wrong. Log it and exit.
-	 */
-	if (bytes_read < sizeof(buf)) {
-		d_fprintf(error_log, "Couldn't read sufficient data from "
-							"/dev/urandom\n");
-		_exit(EXIT_FAILURE);
-	}
-
-	td = mhash_init(MHASH_SHA256);
-	mhash(td, &buf, sizeof(buf));
-	hash = mhash_end(td);
-
-	memset(shash, 0, sizeof(shash));
-	hbs = mhash_get_block_size(MHASH_SHA256);
-	for (i = 0; i < hbs; i++) {
-		sprintf(ht, "%.2x", hash[i]);
-		strncat(shash, ht, 2);
-	}
-	free(hash);
-
-	return strdup(shash);
-}
-
-/*
  * This will create a SHA-256 token for use in forms to help prevent
  * against CSRF attacks.
  */
-char *generate_csrf_token(void)
+static void generate_csrf_token(char *csrf_token)
 {
 	TCTDB *tdb;
 	TDBQRY *qry;
@@ -353,7 +313,6 @@ char *generate_csrf_token(void)
 	char restrict_ip[2];
 	char capabilities[4];
 	const char *rbuf;
-	char *csrf_token = create_session_id();
 
 	/*
 	 * We want to set a new CSRF token in the users session.
@@ -383,6 +342,7 @@ char *generate_csrf_token(void)
 						user_session.restrict_ip);
 	snprintf(capabilities, sizeof(capabilities), "%d",
 						user_session.capabilities);
+	generate_hash(csrf_token, SHA256);
 	cols = tcmapnew3("tenant", user_session.tenant,
 			"sid", sid,
 			"uid", uid,
@@ -403,8 +363,6 @@ char *generate_csrf_token(void)
 
 	tctdbclose(tdb);
 	tctdbdel(tdb);
-
-	return csrf_token;
 }
 
 /*
@@ -412,12 +370,11 @@ char *generate_csrf_token(void)
  */
 void add_csrf_token(TMPL_varlist *varlist)
 {
-	char *csrf_token;
+	char csrf_token[CSRF_LEN + 1];
 
-	csrf_token = generate_csrf_token();
+	generate_csrf_token(csrf_token);
 	varlist = TMPL_add_var(varlist, "csrf_token", csrf_token,
 							(char *)NULL);
-	free(csrf_token);
 }
 
 /*
@@ -465,12 +422,12 @@ void display_last_login(TMPL_varlist *varlist)
  */
 void create_session(unsigned long long sid)
 {
-	char *session_id;
+	char session_id[SID_LEN + 1];
 	char restrict_ip[2] = "0\0";
 	char pkbuf[256];
 	char timestamp[21];
 	char ssid[21];
-	char tenant[NI_MAXHOST];
+	char tenant[TENANT_MAX + 1];
 	char *username;
 	int primary_key_size;
 	MYSQL_RES *res;
@@ -484,7 +441,7 @@ void create_session(unsigned long long sid)
 	db_row = get_dbrow(res);
 
 	get_tenant(env_vars.host, tenant);
-	session_id = create_session_id();
+	generate_hash(session_id, SHA256);
 
 	if (strcmp(get_var(qvars, "restrict_ip"), "true") == 0) {
 		d_fprintf(debug_log, "Restricting session to origin ip "
@@ -521,7 +478,6 @@ void create_session(unsigned long long sid)
 	mysql_free_result(res);
 	free_vars(db_row);
 	free(username);
-	free(session_id);
 }
 
 /*

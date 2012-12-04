@@ -15,8 +15,6 @@ char *username_to_name(const char *username);
 bool is_logged_in(void);
 int check_auth(void);
 void set_user_session(void);
-char *create_session_id(void);
-char *generate_csrf_token(void);
 void add_csrf_token(TMPL_varlist *varlist);
 bool valid_csrf_token(void);
 void display_last_login(TMPL_varlist *varlist);
