@@ -127,6 +127,7 @@ char *generate_hash(char *hash, int type)
 	int fd;
 	int i;
 	int hbs;
+	int hash_len;
 	ssize_t bytes_read;
 	char buf[ENTROPY_SIZE];
 	char ht[3];
@@ -147,12 +148,26 @@ char *generate_hash(char *hash, int type)
 		_exit(EXIT_FAILURE);
 	}
 
-	td = mhash_init(MHASH_SHA256);
+	switch (type) {
+	case SHA1:
+		td = mhash_init(MHASH_SHA1);
+		hbs = mhash_get_block_size(MHASH_SHA1);
+		hash_len = SHA1_LEN;
+		break;
+	case SHA256:
+		td = mhash_init(MHASH_SHA256);
+		hbs = mhash_get_block_size(MHASH_SHA256);
+		hash_len = SHA256_LEN;
+		break;
+	default:
+		td = mhash_init(MHASH_SHA1);
+		hbs = mhash_get_block_size(MHASH_SHA1);
+		hash_len = SHA1_LEN;
+	}
 	mhash(td, &buf, sizeof(buf));
 	xhash = mhash_end(td);
 
-	hbs = mhash_get_block_size(MHASH_SHA256);
-	memset(hash, 0, SHA256_LEN + 1);
+	memset(hash, 0, hash_len + 1);
 	for (i = 0; i < hbs; i++) {
 		sprintf(ht, "%.2x", xhash[i]);
 		strncat(hash, ht, 2);
