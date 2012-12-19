@@ -294,8 +294,8 @@ void set_user_session(void)
 }
 
 /*
- * This will create a SHA-256 token for use in forms to help prevent
- * against CSRF attacks.
+ * This will create a token for use in forms to help prevent against
+ * CSRF attacks.
  */
 static void generate_csrf_token(char *csrf_token)
 {
