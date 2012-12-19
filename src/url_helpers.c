@@ -342,7 +342,7 @@ static void generate_csrf_token(char *csrf_token)
 						user_session.restrict_ip);
 	snprintf(capabilities, sizeof(capabilities), "%d",
 						user_session.capabilities);
-	generate_hash(csrf_token, SHA256);
+	generate_hash(csrf_token, SHA1);
 	cols = tcmapnew3("tenant", user_session.tenant,
 			"sid", sid,
 			"uid", uid,
@@ -441,7 +441,7 @@ void create_session(unsigned long long sid)
 	db_row = get_dbrow(res);
 
 	get_tenant(env_vars.host, tenant);
-	generate_hash(session_id, SHA256);
+	generate_hash(session_id, SHA1);
 
 	if (strcmp(get_var(qvars, "restrict_ip"), "true") == 0) {
 		d_fprintf(debug_log, "Restricting session to origin ip "
