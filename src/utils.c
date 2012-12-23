@@ -118,9 +118,11 @@ out:
 }
 
 /*
- * Generates a hash (currently SHA-256). using /dev/urandom as a
- * source of entropy. The type argument should currently be passed
- * in as SHA256, though it's currently unused.
+ * Generates a hash of the specified type, using /dev/urandom as a
+ * source of entropy.
+ *
+ * It plaves the resultant hash in hash and also returns a pointer
+ * to it.
  */
 char *generate_hash(char *hash, int type)
 {
