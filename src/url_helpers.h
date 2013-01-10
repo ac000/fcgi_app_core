@@ -11,7 +11,4 @@
 #ifndef _URL_HELPERS_H_
 #define _URL_HELPERS_H_
 
-void add_csrf_token(TMPL_varlist *varlist);
-bool valid_csrf_token(void);
-
 #endif /* _URL_HELPERS_H_ */
