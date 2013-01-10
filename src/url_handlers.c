@@ -33,7 +33,6 @@
 
 #include "common.h"
 #include "utils.h"
-#include "url_helpers.h"
 #include "audit.h"
 
 /*

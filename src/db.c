@@ -13,7 +13,6 @@
 
 #include "common.h"
 #include "app_config.h"
-#include "url_helpers.h"
 #include "utils.h"
 #include "db.h"
 
