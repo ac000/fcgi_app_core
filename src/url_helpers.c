@@ -34,28 +34,6 @@
 #include "audit.h"
 
 /*
- * Given a username return the real name, which should be free'd.
- */
-char *username_to_name(const char *username)
-{
-	char *who;
-	char *name;
-	MYSQL_RES *res;
-	MYSQL_ROW row;
-
-	who = make_mysql_safe_string(username);
-	res = sql_query("SELECT name FROM passwd WHERE username = '%s'", who);
-	row = mysql_fetch_row(res);
-
-	name = strdup(row[0]);
-
-	mysql_free_result(res);
-	free(who);
-
-	return name;
-}
-
-/*
  * This checks if a user is currently logged in. It is called at the start
  * of each request.
  *
@@ -478,18 +456,6 @@ void create_session(unsigned long long sid)
 	mysql_free_result(res);
 	free_vars(db_row);
 	free(username);
-}
-
-/*
- * Send the specified template to the user.
- */
-void send_template(const char *template, TMPL_varlist *varlist,
-						TMPL_fmtlist *fmtlist)
-{
-	printf("Cache-Control: private\r\n");
-	printf("Content-Type: text/html\r\n\r\n");
-	TMPL_write(template, NULL, fmtlist, varlist, stdout, error_log);
-	fflush(error_log);
 }
 
 /*

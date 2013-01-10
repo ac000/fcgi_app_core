@@ -118,6 +118,28 @@ out:
 }
 
 /*
+ * Given a username return the real name, which should be free'd.
+ */
+char *username_to_name(const char *username)
+{
+	char *who;
+	char *name;
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+
+	who = make_mysql_safe_string(username);
+	res = sql_query("SELECT name FROM passwd WHERE username = '%s'", who);
+	row = mysql_fetch_row(res);
+
+	name = strdup(row[0]);
+
+	mysql_free_result(res);
+	free(who);
+
+	return name;
+}
+
+/*
  * Generates a hash of the specified type, using /dev/urandom as a
  * source of entropy.
  *
@@ -1031,4 +1053,16 @@ char *xss_safe_string(const char *string)
 out_fail:
 	d_fprintf(error_log, "%s: Could not realloc(). Exiting.\n", __func__);
 	_exit(EXIT_FAILURE);
+}
+
+/*
+ * Send the specified template to the user.
+ */
+void send_template(const char *template, TMPL_varlist *varlist,
+		   TMPL_fmtlist *fmtlist)
+{
+	printf("Cache-Control: private\r\n");
+	printf("Content-Type: text/html\r\n\r\n");
+	TMPL_write(template, NULL, fmtlist, varlist, stdout, error_log);
+	fflush(error_log);
 }
