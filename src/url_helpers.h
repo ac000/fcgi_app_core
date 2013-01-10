@@ -11,12 +11,7 @@
 #ifndef _URL_HELPERS_H_
 #define _URL_HELPERS_H_
 
-bool is_logged_in(void);
-int check_auth(void);
-void set_user_session(void);
 void add_csrf_token(TMPL_varlist *varlist);
 bool valid_csrf_token(void);
-void display_last_login(TMPL_varlist *varlist);
-void create_session(unsigned long long sid);
 
 #endif /* _URL_HELPERS_H_ */

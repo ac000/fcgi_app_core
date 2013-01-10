@@ -11,7 +11,11 @@
 #ifndef _AUDIT_H_
 #define _AUDIT_H_
 
+int check_auth(void);
+bool is_logged_in(void);
 unsigned long long log_login(void);
-time_t get_last_login(char *from_host);
+void display_last_login(TMPL_varlist *varlist);
+void create_session(unsigned long long sid);
+void set_user_session(void);
 
 #endif /* _AUDIT_H_ */
