@@ -10,6 +10,8 @@
 
 #include <stdlib.h>
 #include <stdarg.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "common.h"
 #include "app_config.h"
