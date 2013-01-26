@@ -2,7 +2,7 @@
  * app_config.h
  *
  * Copyright (C) 2012		OpenTech Labs
- *				Andrew Clayton <andrew@popentechlabs.co.uk>
+ *				Andrew Clayton <andrew@opentechlabs.co.uk>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
