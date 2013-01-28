@@ -10,11 +10,11 @@ app: $(objects)
 	@echo -e "  LNK\t$@"
 	@$(CC) $(LDFLAGS) -o app $(objects) ${LIBS}
 
-app.o: common.h app.h app.c
+app.o: common.h get_config.h app_config.h url_handlers.h app.h app.c
 	@echo -e "  CC\t$@"
 	@$(CC) $(CFLAGS) -c app.c ${INCS}
 
-url_handlers.o: common.h url_handlers.c
+url_handlers.o: common.h utils.h audit.h url_handlers.c
 	@echo -e "  CC\t$@"
 	@$(CC) $(CFLAGS) -c url_handlers.c ${INCS}
 
@@ -22,19 +22,19 @@ utils.o: common.h utils.h utils.c
 	@echo -e "  CC\t$@"
 	@$(CC) $(CFLAGS) -c utils.c ${INCS}
 
-db.o: common.h db.h db.c
+db.o: common.h app_config.h utils.h db.h db.c
 	@echo -e "  CC\t$@"
 	@$(CC) $(CFLAGS) -c db.c ${INCS}
 
-get_config.o: common.h get_config.c get_config.h
+get_config.o: app_config.h common.h get_config.c
 	@echo -e "  CC\t$@"
 	@$(CC) $(CFLAGS) -c get_config.c ${INCS}
 
-audit.o: common.h audit.h audit.c
+audit.o: common.h utils.h audit.c
 	@echo -e "  CC\t$@"
 	@$(CC) $(CFLAGS) -c audit.c ${INCS}
 
-csrf.o: common.h csrf.c
+csrf.o: common.h utils.h csrf.c
 	@echo -e "  CC\t$@"
 	@$(CC) $(CFLAGS) -c csrf.c ${INCS}
 
