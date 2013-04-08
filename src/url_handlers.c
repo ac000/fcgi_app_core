@@ -1,15 +1,12 @@
 /*
  * url_handlers.c
  *
- * Copyright (C) 2012		OpenTech Labs
+ * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@opentechlabs.co.uk>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
-
-/* FastCGI stdio wrappers */
-#include <fcgi_stdio.h>
 
 #include <stdio.h>
 #include <limits.h>
@@ -53,7 +50,7 @@ static void login(void)
 		if (ret == 0) {
 			sid = log_login();
 			create_session(sid);
-			printf("Location: //\r\n\r\n");
+			fcgx_p("Location: //\r\n\r\n");
 			return; /* Successful login */
 		}
 	}
@@ -100,7 +97,7 @@ static void logout(void)
 	tctdbdel(tdb);
 
 	/* Immediately expire the session cookies */
-	printf("Set-Cookie: session_id=deleted; "
+	fcgx_p("Set-Cookie: session_id=deleted; "
 				"expires=Thu, 01 Jan 1970 00:00:01 GMT; "
 				"path=/; httponly\r\n");
 	send_template("templates/logout.tmpl", NULL, NULL);
@@ -183,7 +180,7 @@ void handle_request(void)
 
 	logged_in = is_logged_in();
 	if (!logged_in) {
-		printf("Location: /login/\r\n\r\n");
+		fcgx_p("Location: /login/\r\n\r\n");
 		goto out2;
 	}
 
@@ -198,7 +195,7 @@ void handle_request(void)
 	}
 
 	/* Default location */
-	printf("Location: /login/\r\n\r\n");
+	fcgx_p("Location: /login/\r\n\r\n");
 
 out:
 	free_user_session();

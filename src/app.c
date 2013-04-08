@@ -1,15 +1,12 @@
 /*
  * app.c - Main application core
  *
- * Copyright (C) 2012		OpenTech Labs
+ * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@opentechlabs.co.uk>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
-
-/* FastCGI stdio wrappers */
-#include <fcgi_stdio.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +17,8 @@
 #include <signal.h>
 #include <limits.h>
 #include <sys/sysinfo.h>
+
+#include <fcgiapp.h>
 
 #include "common.h"
 #include "get_config.h"
@@ -388,11 +387,11 @@ static void accept_request(void)
 	 */
 	signal(SIGRTMIN, SIG_IGN);
 
-	while (FCGI_Accept() >= 0) {
+	while (FCGX_Accept(&fcgx_in, &fcgx_out, &fcgx_err, &fcgx_envp) >= 0) {
 		if (rotate_log_files)
 			init_logs();
 		handle_request();
-		FCGI_Finish();
+		FCGX_Finish();
 	}
 
 	/* If we get here, something went wrong */

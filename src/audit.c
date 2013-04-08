@@ -1,15 +1,12 @@
 /*
  * audit.c - Auditing subsystem
  *
- * Copyright (C) 2012		OpenTech Labs
+ * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@opentechlabs.co.uk>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
-
-/* FastCGI stdio wrappers */
-#include <fcgi_stdio.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -321,7 +318,7 @@ void create_session(unsigned long long sid)
 	tctdbclose(tdb);
 	tctdbdel(tdb);
 
-	printf("Set-Cookie: session_id=%s; path=/; httponly\r\n", session_id);
+	fcgx_p("Set-Cookie: session_id=%s; path=/; httponly\r\n", session_id);
 
 	mysql_free_result(res);
 	free_vars(db_row);

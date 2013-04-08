@@ -1,15 +1,12 @@
 /*
  * csrf.c - CSRF mitigation functions
  *
- * Copyright (C) 2012		OpenTech Labs
+ * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@opentechlabs.co.uk>
  *
  * Released under the GNU Affero General Public License version 3
  * See AGPL-3.0.txt
  */
-
-/* FastCGI stdio wrappers */
-#include <fcgi_stdio.h>
 
 #include <stdio.h>
 #include <stdlib.h>

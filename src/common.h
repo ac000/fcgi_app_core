@@ -1,7 +1,7 @@
 /*
  * common.h
  *
- * Copyright (C) 2012		OpenTech Labs
+ * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@opentechlabs.co.uk>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
@@ -20,14 +20,15 @@
  */
 #define _GNU_SOURCE 1
 
-#include <fcgi_stdio.h>
-#include <ctemplate.h>
-
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <time.h>
+
+#include <fcgiapp.h>
+
+#include <ctemplate.h>
 
 #include <glib.h>
 
@@ -96,6 +97,15 @@
 		fflush(stream); \
 	} while (0)
 
+/* Remap some FCGX_ functions for usability/readability */
+#define fcgx_p(fmt, ...)	FCGX_FPrintF(fcgx_out, fmt, ##__VA_ARGS__)
+#define fcgx_vp(fmt, valist)	FCGX_VFPrintF(fcgx_out, fmt, valist)
+#define fcgx_ps(buf, size)	FCGX_PutStr(buf, size, fcgx_out)
+#define fcgx_param(name)	FCGX_GetParam(name, fcgx_envp)
+#define fcgx_putc(c)		FCGX_PutChar(c, fcgx_out)
+#define fcgx_puts(s)		FCGX_PutS(s, fcgx_out)
+#define fcgx_gs(buf, size)	FCGX_GetStr(buf, size, fcgx_in)
+
 /*
  * Wrapper around mysql_real_escape_string()
  *
@@ -139,6 +149,7 @@ struct env_vars {
 	char *request_uri;
 	char *request_method;
 	char *content_type;
+	off_t content_length;
 	char *http_cookie;
 	char *http_user_agent;
 	char *remote_addr;
@@ -155,6 +166,11 @@ struct file_info {
 	char *mime_type;
 } file_info;
 struct file_info file_info;
+
+FCGX_Stream *fcgx_in;
+FCGX_Stream *fcgx_out;
+FCGX_Stream *fcgx_err;
+FCGX_ParamArray fcgx_envp;
 
 extern FILE *access_log;
 extern FILE *sql_log;

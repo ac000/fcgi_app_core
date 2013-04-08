@@ -1,7 +1,7 @@
 /*
  * utils.h
  *
- * Copyright (C) 2012		OpenTech Labs
+ * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@opentechlabs.co.uk>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
@@ -40,7 +40,7 @@ void do_pagination(TMPL_varlist *varlist, int page, int nr_pages);
 TMPL_varlist *do_zebra(TMPL_varlist *varlist, unsigned long row);
 TMPL_varlist *add_html_var(TMPL_varlist *varlist, const char *name,
 			   const char *value);
-void de_xss(const char *value, FILE *out);
+void de_xss(const char *value, FCGX_Stream *out);
 char *xss_safe_string(const char *string);
 void send_template(const char *template, TMPL_varlist *varlist,
 		   TMPL_fmtlist *fmtlist);
