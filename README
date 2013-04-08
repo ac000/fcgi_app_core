@@ -27,8 +27,8 @@ build it
     $ cd libctemplate
     $ git checkout -b otl origin/otl
     $ make
-    $ ln -s libctemplate-fcgi.so.1.4.0 libctemplate-fcgx.so
-    $ ln -s libctemplate-fcgi.so.1.4.0 libctemplate-fcgx.so.1
+    $ ln -s libctemplate-fcgx.so.1.4.0 libctemplate-fcgx.so
+    $ ln -s libctemplate-fcgx.so.1.4.0 libctemplate-fcgx.so.1
 
 Go back into the fcgi_app_core repository and create the symlink
 
