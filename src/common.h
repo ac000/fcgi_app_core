@@ -71,7 +71,7 @@
 
 /* Unbreak __func__ by my_global.h */
 #ifdef __func__
-#undef __func__
+	#undef __func__
 #endif
 
 /*
