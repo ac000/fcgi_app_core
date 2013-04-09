@@ -138,7 +138,7 @@ struct user_session {
 	char csrf_token[CSRF_LEN + 1];
 	bool restrict_ip;
 	char *user_hdr;
-} user_session;
+};
 struct user_session user_session;
 
 /*
@@ -155,7 +155,7 @@ struct env_vars {
 	char *remote_addr;
 	char *host;
 	char *query_string;
-} env_vars;
+};
 struct env_vars env_vars;
 
 /* Structure to hold information about uploaded files via POST */
@@ -164,7 +164,7 @@ struct file_info {
 	char temp_file_name[PATH_MAX];
 	char *name;
 	char *mime_type;
-} file_info;
+};
 struct file_info file_info;
 
 FCGX_Stream *fcgx_in;
