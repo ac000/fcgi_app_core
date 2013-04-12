@@ -78,7 +78,7 @@ static char *url_decode(const char *str)
 		if (*str == '%') {
 			if (str[1] && str[2]) {
 				*pbuf++ = from_hex(str[1]) << 4 |
-							from_hex(str[2]);
+					from_hex(str[2]);
 				str += 2;
 			}
 		} else if (*str == '+') {
@@ -289,7 +289,7 @@ static void add_multipart_avar(const char *name, const char *value,
 		if (lidx[0] != '\0')
 			avars = g_list_append(avars, query_values);
 		query_values = g_hash_table_new_full(g_str_hash, g_str_equal,
-							g_free, g_free);
+				g_free, g_free);
 	}
 	snprintf(lidx, sizeof(lidx), "%s", idx);
 	token = NULL;
@@ -352,7 +352,7 @@ static void add_avar(const char *qvar, int finalize)
 		if (lidx[0] != '\0')
 			avars = g_list_append(avars, query_values);
 		query_values = g_hash_table_new_full(g_str_hash, g_str_equal,
-							g_free, g_free);
+				g_free, g_free);
 	}
 	snprintf(lidx, sizeof(lidx), "%s", idx);
 	token = NULL;
@@ -387,7 +387,7 @@ static void add_var(const char *qvar)
 
 	if (!qvars)
 		qvars = g_hash_table_new_full(g_str_hash, g_str_equal,
-							g_free, g_free);
+				g_free, g_free);
 
 	string = strdupa(qvar);
 
@@ -450,7 +450,7 @@ static void process_mime_part(GMimeObject *part, gpointer user_data)
 
 	content_type = g_mime_object_get_content_type(part);
 	disposition = g_mime_disposition_new(g_mime_object_get_header(part,
-						"Content-Disposition"));
+				"Content-Disposition"));
 
 	if (g_mime_disposition_get_parameter(disposition, "filename")) {
 		char temp_name[] = "/tmp/u_files/pgv-XXXXXX";
@@ -596,17 +596,16 @@ GHashTable *get_dbrow(MYSQL_RES *res)
 	GHashTable *db_row;
 
 	db_row  = g_hash_table_new_full(g_str_hash, g_str_equal,
-							g_free, g_free);
+			g_free, g_free);
 
 	num_fields = mysql_num_fields(res);
 	fields = mysql_fetch_fields(res);
 	row = mysql_fetch_row(res);
 	for (i = 0; i < num_fields; i++) {
 		d_fprintf(debug_log, "Adding key: %s with value: %s to "
-						"hash table\n",
-						fields[i].name, row[i]);
+				"hash table\n", fields[i].name, row[i]);
 		g_hash_table_insert(db_row, g_strdup(fields[i].name),
-							g_strdup(row[i]));
+				g_strdup(row[i]));
 	}
 
 	return db_row;
@@ -873,16 +872,16 @@ void do_pagination(TMPL_varlist *varlist, int page, int nr_pages)
 		if (!IS_FIRST_PAGE(page)) {
 			snprintf(page_no, sizeof(page_no), "%d", page - 1);
 			varlist = TMPL_add_var(varlist, "prev_page", page_no,
-								(char *)NULL);
+					(char *)NULL);
 		}
 		if (!IS_LAST_PAGE(page, nr_pages)) {
 			snprintf(page_no, sizeof(page_no), "%d", page + 1);
 			varlist = TMPL_add_var(varlist, "next_page", page_no,
-								(char *)NULL);
+					(char *)NULL);
 		}
 	} else {
 		varlist = TMPL_add_var(varlist, "no_pages", "true",
-								(char *)NULL);
+				(char *)NULL);
 	}
 }
 
@@ -973,49 +972,49 @@ char *xss_safe_string(const char *string)
 		switch (*string) {
 		case '&':
 			safe_string = realloc(safe_string, strlen(safe_string)
-									+ 6);
+					+ 6);
 			if (!safe_string)
 				goto out_fail;
 			strcat(safe_string, "&amp;");
 			break;
 		case '<':
 			safe_string = realloc(safe_string, strlen(safe_string)
-									+ 5);
+					+ 5);
 			if (!safe_string)
 				goto out_fail;
 			strcat(safe_string, "&lt;");
 			break;
 		case '>':
 			safe_string = realloc(safe_string, strlen(safe_string)
-									+ 5);
+					+ 5);
 			if (!safe_string)
 				goto out_fail;
 			strcat(safe_string, "&gt;");
 			break;
 		case '"':
 			safe_string = realloc(safe_string, strlen(safe_string)
-									+ 7);
+					+ 7);
 			if (!safe_string)
 				goto out_fail;
 			strcat(safe_string, "&quot;");
 			break;
 		case '\'':
 			safe_string = realloc(safe_string, strlen(safe_string)
-									+ 7);
+					+ 7);
 			if (!safe_string)
 				goto out_fail;
 			strcat(safe_string, "&#x27;");
 			break;
 		case '/':
 			safe_string = realloc(safe_string, strlen(safe_string)
-									+ 7);
+					+ 7);
 			if (!safe_string)
 				goto out_fail;
 			strcat(safe_string, "&#x2F;");
 			break;
 		default:
 			safe_string = realloc(safe_string, strlen(safe_string)
-									+ 2);
+					+ 2);
 			if (!safe_string)
 				goto out_fail;
 			strncat(safe_string, string, 1);
