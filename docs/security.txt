@@ -75,7 +75,7 @@ out.
 This should be pretty effective as it's improbable that an attacker will guess
 the right csrf token to use.
 
-These functions are defined in src/url_helpers.c
+These functions are defined in src/csrf.c
 
 
 XSS Countermeasures
