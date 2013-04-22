@@ -1025,7 +1025,7 @@ char *xss_safe_string(const char *string)
 	return safe_string;
 
 out_fail:
-	d_fprintf(error_log, "%s: Could not realloc(). Exiting.\n", __func__);
+	d_fprintf(error_log, "Could not realloc(). Exiting.\n");
 	_exit(EXIT_FAILURE);
 }
 
