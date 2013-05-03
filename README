@@ -18,7 +18,7 @@ all create a symlink for libctemplate to point to the directory where it's
 located. e.g
 
 If you started in ~/programming/projects when you cloned this repository,
-go back to that directory and clone libcemplate if you haven't already.
+go back to that directory and clone libctemplate if you haven't already.
 
     $ git clone git://github.com/opentechlabs/libctemplate.git
 
