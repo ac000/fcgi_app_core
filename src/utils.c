@@ -1037,6 +1037,6 @@ void send_template(const char *template, TMPL_varlist *varlist,
 {
 	fcgx_p("Cache-Control: private\r\n");
 	fcgx_p("Content-Type: text/html\r\n\r\n");
-	TMPL_write(template, NULL, fmtlist, varlist, stdout, error_log);
+	TMPL_write(template, NULL, fmtlist, varlist, fcgx_out, error_log);
 	fflush(error_log);
 }
