@@ -4,8 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- * Released under the GNU Affero General Public License version 3
- * See AGPL-3.0.txt
+ * This software is released under the MIT License (MIT-LICENSE.txt)
+ * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
 
 #include <stdio.h>
