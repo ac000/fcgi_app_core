@@ -31,6 +31,7 @@
 #include "common.h"
 #include "utils.h"
 #include "audit.h"
+#include "csrf.h"
 
 /*
  * /login/

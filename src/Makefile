@@ -14,7 +14,7 @@ app.o: common.h get_config.h app_config.h url_handlers.h app.h app.c
 	@echo -e "  CC\t$@"
 	@$(CC) $(CFLAGS) -c app.c ${INCS}
 
-url_handlers.o: common.h utils.h audit.h url_handlers.c
+url_handlers.o: common.h csrf.h utils.h audit.h url_handlers.c
 	@echo -e "  CC\t$@"
 	@$(CC) $(CFLAGS) -c url_handlers.c ${INCS}
 
