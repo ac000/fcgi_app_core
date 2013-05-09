@@ -92,13 +92,15 @@ static void generate_csrf_token(char *csrf_token)
 /*
  * Given a template varlist, this will add a csrf token variable.
  */
-void add_csrf_token(TMPL_varlist *varlist)
+TMPL_varlist *add_csrf_token(TMPL_varlist *varlist)
 {
 	char csrf_token[CSRF_LEN + 1];
+	TMPL_varlist *vlist = NULL;
 
 	generate_csrf_token(csrf_token);
-	varlist = TMPL_add_var(varlist, "csrf_token", csrf_token,
+	vlist = TMPL_add_var(varlist, "csrf_token", csrf_token,
 			(char *)NULL);
+	return vlist;
 }
 
 /*

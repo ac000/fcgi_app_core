@@ -11,7 +11,7 @@
 #ifndef _CSRF_H_
 #define _CSRF_H_
 
-void add_csrf_token(TMPL_varlist *varlist);
+TMPL_varlist *add_csrf_token(TMPL_varlist *varlist);
 bool valid_csrf_token(void);
 
 #endif /* _CSRF_H_ */
