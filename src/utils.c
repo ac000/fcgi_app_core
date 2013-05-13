@@ -595,7 +595,7 @@ GHashTable *get_dbrow(MYSQL_RES *res)
 	MYSQL_FIELD *fields;
 	GHashTable *db_row;
 
-	db_row  = g_hash_table_new_full(g_str_hash, g_str_equal,
+	db_row = g_hash_table_new_full(g_str_hash, g_str_equal,
 			g_free, g_free);
 
 	num_fields = mysql_num_fields(res);
