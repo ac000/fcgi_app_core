@@ -20,6 +20,7 @@
 #include <alloca.h>
 #include <netdb.h>
 #include <stdbool.h>
+#include <setjmp.h>
 
 #include <mhash.h>
 
@@ -140,13 +141,28 @@ static bool match_uri(const char *request_uri, const char *match)
 		return false;
 }
 
+static jmp_buf env;
+static char *request_uri;
+/*
+ * This is the main URI mapping/routing function.
+ *
+ * Takes a URI string to match and the function to run if it matches
+ * request_uri.
+ */
+static inline void uri_map(const char *uri, void (uri_handler)(void))
+{
+	if (match_uri(request_uri, uri)) {
+		uri_handler();
+		longjmp(env, 1);
+	}
+}
+
 /*
  * Main application. This is where the requests come in and routed.
  */
 void handle_request(void)
 {
 	bool logged_in = false;
-	char *request_uri;
 	struct timespec stp;
 	struct timespec etp;
 
@@ -165,19 +181,15 @@ void handle_request(void)
 	if (!conn)
 		goto out2;
 
+	/* Return from non-authenticated URIs and goto 'out2' */
+	if (setjmp(env))
+		goto out2;
+
 	/*
 	 * Some routes need to come before the login / session stuff as
 	 * they can't be logged in and have no session.
 	 */
-	if (match_uri(request_uri, "//")) {
-		/* function call goes here */
-		goto out2;
-	}
-
-	if (match_uri(request_uri, "/login/")) {
-		login();
-		goto out2;
-	}
+	uri_map("/login/", login);
 
 	logged_in = is_logged_in();
 	if (!logged_in) {
@@ -188,12 +200,12 @@ void handle_request(void)
 	/* Logged in, set-up the user_session structure */
 	set_user_session();
 
-	/* Add new url handlers after here */
-
-	if (match_uri(request_uri, "/logout/")) {
-		logout();
+	/* Return from authenticated URIs and goto 'out' */
+	if (setjmp(env))
 		goto out;
-	}
+
+	/* Add new url handlers after here */
+	uri_map("/logout/", logout);
 
 	/* Default location */
 	fcgx_p("Location: /login/\r\n\r\n");
