@@ -105,13 +105,14 @@ static void logout(void)
 	send_template("templates/logout.tmpl", NULL, NULL);
 }
 
+static char *request_uri;
 /*
- * Given a request URI and the URI we are checking for.
+ * Given a URI we are checking for against request_uri
  * Return:
  *     true for a match and
  *     false for no match.
  */
-static bool match_uri(const char *request_uri, const char *match)
+static bool match_uri(const char *match)
 {
 	size_t rlen;
 	size_t mlen = strlen(match);
@@ -142,7 +143,6 @@ static bool match_uri(const char *request_uri, const char *match)
 }
 
 static jmp_buf env;
-static char *request_uri;
 /*
  * This is the main URI mapping/routing function.
  *
@@ -151,7 +151,7 @@ static char *request_uri;
  */
 static inline void uri_map(const char *uri, void (uri_handler)(void))
 {
-	if (match_uri(request_uri, uri)) {
+	if (match_uri(uri)) {
 		uri_handler();
 		longjmp(env, 1);
 	}
