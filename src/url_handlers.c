@@ -112,10 +112,10 @@ static char *request_uri;
  *     true for a match and
  *     false for no match.
  */
-static bool match_uri(const char *match)
+static bool match_uri(const char *uri)
 {
 	size_t rlen;
-	size_t mlen = strlen(match);
+	size_t mlen = strlen(uri);
 	const char *request;
 	char *req = strdupa(request_uri);
 
@@ -134,9 +134,9 @@ static bool match_uri(const char *match)
 	 * The image URLs are a bit different, we only want to match on
 	 * the first /.../ part and they don't contain a ?.
 	 */
-	if (strstr(request, "/get_image/") && strstr(match, "/get_image/"))
+	if (strstr(request, "/get_image/") && strstr(uri, "/get_image/"))
 		return true;
-	else if (strncmp(request, match, mlen) == 0 && rlen == mlen)
+	else if (strncmp(request, uri, mlen) == 0 && rlen == mlen)
 		return true;
 	else
 		return false;
