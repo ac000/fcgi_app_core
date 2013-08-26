@@ -178,7 +178,7 @@ unsigned long long log_login(void)
 	res = sql_query("SELECT uid FROM passwd WHERE username = '%s'",
 			username);
 	row = mysql_fetch_row(res);
-	uid = atoi(row[0]);
+	uid = strtoul(row[0], NULL, 10);
 	mysql_free_result(res);
 
 	/* We need to be sure a new sid isn't inserted here */
@@ -376,7 +376,7 @@ void set_user_session(void)
 	snprintf(user_session.tenant, sizeof(user_session.tenant), "%s",
 			tcmapget2(cols, "tenant"));
 	user_session.sid = strtoull(tcmapget2(cols, "sid"), NULL, 10);
-	user_session.uid = atoi(tcmapget2(cols, "uid"));
+	user_session.uid = strtoul(tcmapget2(cols, "uid"), NULL, 10);
 	user_session.username = strdup(tcmapget2(cols, "username"));
 	user_session.name = strdup(tcmapget2(cols, "name"));
 	user_session.login_at = atol(tcmapget2(cols, "login_at"));
