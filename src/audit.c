@@ -396,8 +396,7 @@ void set_user_session(void)
 	tctdbqrydel(qry);
 
 	/*
-	 * Set the user header banner, which displays the users name, uid and
-	 * whether they are an Approver and or Admin.
+	 * Set the user header banner, which displays the users name and uid
 	 */
 	xss_string = xss_safe_string(user_session.name);
 	snprintf(user_hdr, sizeof(user_hdr), "<big><big> %s</big></big><small>"
