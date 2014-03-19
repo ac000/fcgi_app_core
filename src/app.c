@@ -138,11 +138,8 @@ static void dump_session_state(void)
 	TCTDB *tdb;
 	TDBQRY *qry;
 	TCLIST *res;
-	TCMAP *cols;
 	int i;
-	int rsize;
 	int nres;
-	const char *rbuf;
 
 	tdb = tctdbnew();
 	tctdbopen(tdb, SESSION_DB, TDBOREADER);
@@ -152,10 +149,12 @@ static void dump_session_state(void)
 	nres = tclistnum(res);
 	fprintf(debug_log, "Number of active sessions: %d\n", nres);
 	for (i = 0; i < nres; i++) {
-		unsigned char capabilities;
+		int rsize;
+		const char *rbuf = tclistval(res, i, &rsize);
+		TCMAP *cols = tctdbget(tdb, rbuf, rsize);
+		unsigned char capabilities = atoi(tcmapget2(
+					cols, "capabilities"));
 
-		rbuf = tclistval(res, i, &rsize);
-		cols = tctdbget(tdb, rbuf, rsize);
 		tcmapiterinit(cols);
 
 		fprintf(debug_log, "\ttenant       : %s\n", tcmapget2(cols,
@@ -164,7 +163,6 @@ static void dump_session_state(void)
 					"sid"));
 		fprintf(debug_log, "\tuid          : %s\n", tcmapget2(cols,
 					"uid"));
-		capabilities = atoi(tcmapget2(cols, "capabilities"));
 		fprintf(debug_log, "\tcapabilities : %d\n", capabilities);
 		fprintf(debug_log, "\tusername     : %s\n", tcmapget2(cols,
 					"username"));
