@@ -44,13 +44,13 @@
 static void login(void)
 {
 	int ret = 1;
-	unsigned long long sid;
 	TMPL_varlist *vl = NULL;
 
 	if (qvars) {
 		ret = check_auth();
 		if (ret == 0) {
-			sid = log_login();
+			unsigned long long sid = log_login();
+
 			create_session(sid);
 			fcgx_p("Location: //\r\n\r\n");
 			return; /* Successful login */
