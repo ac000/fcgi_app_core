@@ -400,7 +400,7 @@ void set_user_session(void)
 	 */
 	xss_string = xss_safe_string(user_session.name);
 	snprintf(user_hdr, sizeof(user_hdr), "<big><big> %s</big></big><small>"
-			"<span class = \"lighter\"> (%d) </span>"
+			"<span class = \"lighter\"> (%u) </span>"
 			"</small>", xss_string, user_session.uid);
 	free(xss_string);
 	strncat(user_hdr, "&nbsp;", 1024 - strlen(user_hdr));
