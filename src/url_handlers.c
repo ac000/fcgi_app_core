@@ -4,6 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
+ * 		 2014		Andrew Clayton <andrew@digital-domain.net>
+ *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
@@ -61,6 +63,7 @@ static void login(void)
 		vl = add_html_var(vl, "logged_in", "no");
 	if (ret == -2)
 		vl = add_html_var(vl, "enabled", "no");
+	vl = add_html_var(vl, "rip", env_vars.remote_addr);
 
 	send_template("templates/login.tmpl", vl, NULL);
 	TMPL_free_varlist(vl);
