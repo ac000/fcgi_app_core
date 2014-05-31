@@ -4,6 +4,8 @@
  * Copyright (C) 2012		OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
+ *		 2014		Andrew Clayton <andrew@digital-domain.net>
+ *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
@@ -12,6 +14,7 @@
 #include <stdarg.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "common.h"
 #include "app_config.h"
@@ -83,13 +86,14 @@ MYSQL_RES *__sql_query(const char *func, const char *fmt, ...)
 
 	if (DEBUG_LEVEL) {
 		char tenant[TENANT_MAX + 1];
-		struct timespec tp;
+		char ts_buf[32];
+		time_t secs = time(NULL);
+		struct tm *tm = localtime(&secs);
 
 		get_tenant(env_vars.host, tenant);
-		clock_gettime(CLOCK_REALTIME, &tp);
-		fprintf(sql_log, "%ld.%06ld %d %s %s: %s\n", tp.tv_sec,
-				tp.tv_nsec / NS_USEC, getpid(), tenant, func,
-				sql);
+		strftime(ts_buf, sizeof(ts_buf), "%F %T %z", tm);
+		fprintf(sql_log, "[%s] %d %s %s: %s\n", ts_buf,  getpid(),
+				tenant, func, sql);
 		fflush(sql_log);
 	}
 
