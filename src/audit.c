@@ -222,9 +222,9 @@ unsigned long long log_login(void)
 
 	/* Divide tv_nsec by 1000 to get a rough microseconds value */
 	sql_query("INSERT INTO utmp VALUES (%ld.%06ld, %u, '%s', '%s', '', "
-			"%llu)",
+			"%d, %llu)",
 			login_at.tv_sec, login_at.tv_nsec / NS_USEC,
-			uid, username, ip_addr, sid);
+			uid, username, ip_addr, env_vars.remote_port, sid);
 	sql_query("UNLOCK TABLES");
 
 	mysql_free_result(res);
