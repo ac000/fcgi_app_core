@@ -61,7 +61,7 @@ hidden input field on the form with add_csrf_token().
 e.g
 
 <input type = "hidden" name = "csrf_token"
- value = "0721d0db8a3dc0d9ce6ebd5ce85b3761a2f21351c836fd4ba076680b8122a6a3" />
+ value = "ec7c2ef686a2ccca7dec766b14bac2dae533e42d" />
 
 This token is also stored in the users session (server side).
 
