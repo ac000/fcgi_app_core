@@ -865,7 +865,7 @@ void get_page_pagination(struct pagination *pn)
 		pn->page_no = 1;
 		pn->from = 0;
 	} else {
-		pn->from = pn->page_no * pn->rows_per_page - pn->rows_per_page;
+		pn->from = (pn->page_no - 1) * pn->rows_per_page;
 	}
 }
 
