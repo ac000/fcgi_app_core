@@ -856,34 +856,34 @@ bool user_already_exists(const char *username)
  *
  * This is used in the results pagination code.
  */
-void get_page_pagination(const char *req_page_no, int rpp, int *page_no,
-			 int *from)
+void get_page_pagination(struct pagination *pn)
 {
-	*page_no = atoi(req_page_no);
+	pn->page_no = pn->requested_page;
 
-	if (*page_no < 2) {
+	if (pn->page_no < 2) {
 		/* Reset to values for showing the first page */
-		*page_no = 1;
-		*from = 0;
+		pn->page_no = 1;
+		pn->from = 0;
 	} else {
-		*from = *page_no * rpp - rpp;
+		pn->from = pn->page_no * pn->rows_per_page - pn->rows_per_page;
 	}
 }
 
 /*
  * Create the next / prev page navigation links.
  */
-void do_pagination(Flate *f, int page, int nr_pages)
+void do_pagination(Flate *f, const struct pagination *pn)
 {
-	if (IS_MULTI_PAGE(nr_pages)) {
+	if (IS_MULTI_PAGE(pn->nr_pages)) {
 		char page_no[10];
+		int rqpage = pn->page_no;
 
-		if (!IS_FIRST_PAGE(page)) {
-			snprintf(page_no, sizeof(page_no), "%d", page - 1);
+		if (!IS_FIRST_PAGE(rqpage)) {
+			snprintf(page_no, sizeof(page_no), "%d", rqpage - 1);
 			lf_set_var(f, "prev_page", page_no, NULL);
 		}
-		if (!IS_LAST_PAGE(page, nr_pages)) {
-			snprintf(page_no, sizeof(page_no), "%d", page + 1);
+		if (!IS_LAST_PAGE(rqpage, pn->nr_pages)) {
+			snprintf(page_no, sizeof(page_no), "%d", rqpage + 1);
 			lf_set_var(f, "next_page", page_no, NULL);
 		}
 		lf_set_var(f, "multi_page", "", NULL);

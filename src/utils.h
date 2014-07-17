@@ -18,6 +18,14 @@
 #define IS_FIRST_PAGE(page)		(((page) == 1) ? 1 : 0)
 #define IS_LAST_PAGE(page, nr_pages)	(((page) == (nr_pages)) ? 1 : 0)
 
+struct pagination {
+	int requested_page;	/* Page requested by client */
+	int page_no;		/* Page being returned to client */
+	int rows_per_page;	/* Rows to show on each page */
+	int nr_pages;		/* Number of pages across result set */
+	int from;		/* Index into the result set to start from */
+};
+
 char *get_tenant(const char *host, char *tenant);
 char *username_to_name(const char *username);
 char *generate_hash(char *hash, int type);
@@ -36,9 +44,8 @@ void send_activation_mail(const char *name, const char *address,
 char *generate_password_hash(int hash_type, const char *password);
 void delete_user_session(unsigned int uid);
 bool user_already_exists(const char *username);
-void get_page_pagination(const char *req_page_no, int rpp, int *page_no,
-			 int *from);
-void do_pagination(Flate *f, int page, int nr_pages);
+void get_page_pagination(struct pagination *pn);
+void do_pagination(Flate *f, const struct pagination *pn);
 void do_zebra(Flate *f, unsigned long row, char *zebra);
 char *de_xss(const char *value);
 void send_template(Flate *f);
