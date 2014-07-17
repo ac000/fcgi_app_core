@@ -19,7 +19,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-#include <ctemplate.h>
+#include <flate.h>
 
 #include <glib.h>
 
@@ -285,7 +285,7 @@ static time_t get_last_login(char *from_host)
  * Adds last login information to the page. Time and location of
  * last login.
  */
-void display_last_login(TMPL_varlist *varlist)
+void display_last_login(Flate *f)
 {
 	char host[NI_MAXHOST];
 	time_t login;
@@ -295,8 +295,8 @@ void display_last_login(TMPL_varlist *varlist)
 		char tbuf[32];
 
 		strftime(tbuf, 32, "%a %b %e %H:%M %Y", localtime(&login));
-		varlist = add_html_var(varlist, "last_login", tbuf);
-		varlist = add_html_var(varlist, "last_login_from", host);
+		lf_set_var(f, "last_login", tbuf, NULL);
+		lf_set_var(f, "last_login_from", host, NULL);
 	}
 }
 
@@ -436,7 +436,7 @@ void set_user_session(void)
 	/*
 	 * Set the user header banner, which displays the users name and uid
 	 */
-	xss_string = xss_safe_string(user_session.name);
+	xss_string = de_xss(user_session.name);
 	snprintf(user_hdr, sizeof(user_hdr), "<big><big> %s</big></big><small>"
 			"<span class = \"lighter\"> (%u) </span>"
 			"</small>", xss_string, user_session.uid);

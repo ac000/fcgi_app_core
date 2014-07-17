@@ -29,7 +29,7 @@
 #include <glib.h>
 
 /* HTML template library */
-#include <ctemplate.h>
+#include <flate.h>
 
 #include "common.h"
 #include "utils.h"
@@ -46,7 +46,7 @@
 static void login(void)
 {
 	int ret = 1;
-	TMPL_varlist *vl = NULL;
+	Flate *f = NULL;
 
 	if (qvars) {
 		ret = check_auth();
@@ -59,14 +59,15 @@ static void login(void)
 		}
 	}
 
+	lf_set_tmpl(&f, "templates/login.tmpl");
 	if (ret == -1)
-		vl = add_html_var(vl, "logged_in", "no");
+		lf_set_var(f, "logged_in", "no", NULL);
 	if (ret == -2)
-		vl = add_html_var(vl, "enabled", "no");
-	vl = add_html_var(vl, "rip", env_vars.remote_addr);
+		lf_set_var(f, "enabled", "no", NULL);
+	lf_set_var(f, "rip", env_vars.remote_addr, NULL);
 
-	send_template("templates/login.tmpl", vl, NULL);
-	TMPL_free_varlist(vl);
+	send_template(f);
+	lf_free(f);
 }
 
 /*
@@ -105,7 +106,7 @@ static void logout(void)
 	fcgx_p("Set-Cookie: session_id=deleted; "
 				"expires=Thu, 01 Jan 1970 00:00:01 GMT; "
 				"path=/; httponly\r\n");
-	send_template("templates/logout.tmpl", NULL, NULL);
+	send_page("templates/logout.tmpl");
 }
 
 static char *request_uri;

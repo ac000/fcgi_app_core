@@ -30,7 +30,7 @@
 
 #include <fcgiapp.h>
 
-#include <ctemplate.h>
+#include <flate.h>
 
 #include <glib.h>
 
@@ -108,6 +108,13 @@
 #define fcgx_putc(c)		FCGX_PutChar(c, fcgx_out)
 #define fcgx_puts(s)		FCGX_PutS(s, fcgx_out)
 #define fcgx_gs(buf, size)	FCGX_GetStr(buf, size, fcgx_in)
+
+/* Nicer names for the libflate stuff */
+#define lf_set_tmpl		flateSetFile
+#define lf_set_var		flateSetVar
+#define lf_set_row		flateDumpTableLine
+#define lf_send			flatePrint
+#define lf_free			flateFreeMem
 
 /*
  * Wrapper around mysql_real_escape_string()

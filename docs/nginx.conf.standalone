@@ -1,13 +1,18 @@
 server {
-        listen          80;
-        server_name     localhost;
+	listen          80;
+	server_name     localhost;
 
-        location ^~ /static/ {
-                root    /var/www/html;
-        }
+	location ^~ /static/ {
+		root    /var/www/sites/app;
+	}
 
-        location / {
-                include fastcgi_params;
-                fastcgi_pass 127.0.0.1:9191;
-        }
+	location ^~ /favicon.ico {
+		root	/var/www/sites/app;
+	}
+
+	location / {
+		root    /var/www/sites/app;
+		include fastcgi_params;
+		fastcgi_pass 127.0.0.1:9191;
+	}
 }

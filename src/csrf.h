@@ -4,6 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
+ *		 2014		Andrew Clayton <andrew@digital-domain.net>
+ *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
@@ -11,7 +13,7 @@
 #ifndef _CSRF_H_
 #define _CSRF_H_
 
-TMPL_varlist *add_csrf_token(TMPL_varlist *varlist);
+void add_csrf_token(Flate *f);
 bool valid_csrf_token(void);
 
 #endif /* _CSRF_H_ */

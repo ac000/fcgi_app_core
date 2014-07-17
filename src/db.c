@@ -54,7 +54,7 @@ MYSQL *db_conn(void)
 				"%s\n", mysql_error(conn));
 		switch (mysql_errno(conn)) {
 		case ER_BAD_DB_ERROR:	/* unknown database */
-			send_template("templates/invalid.tmpl", NULL, NULL);
+			send_page("templates/invalid.tmpl");
 			break;
 		}
 		conn = NULL;

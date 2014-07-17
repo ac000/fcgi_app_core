@@ -4,6 +4,8 @@
  * Copyright (C) 2012		OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
+ *		 2014		Andrew Clayton <andrew@digital-domain.net>
+ *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
@@ -14,7 +16,7 @@
 int check_auth(void);
 bool is_logged_in(void);
 unsigned long long log_login(void);
-void display_last_login(TMPL_varlist *varlist);
+void display_last_login(Flate *f);
 void create_session(unsigned long long sid);
 void set_user_session(void);
 

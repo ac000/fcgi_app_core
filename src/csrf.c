@@ -4,6 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
+ * 		 2014		Andrew Clayton <andrew@digital-domain.net>
+ *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
@@ -12,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ctemplate.h>
+#include <flate.h>
 
 #include "common.h"
 #include "utils.h"
@@ -92,15 +94,12 @@ static void generate_csrf_token(char *csrf_token)
 /*
  * Given a template varlist, this will add a csrf token variable.
  */
-TMPL_varlist *add_csrf_token(TMPL_varlist *varlist)
+void add_csrf_token(Flate *f)
 {
 	char csrf_token[CSRF_LEN + 1];
-	TMPL_varlist *vlist = NULL;
 
 	generate_csrf_token(csrf_token);
-	vlist = TMPL_add_var(varlist, "csrf_token", csrf_token,
-			(char *)NULL);
-	return vlist;
+	lf_set_var(f, "csrf_token", csrf_token, NULL);
 }
 
 /*

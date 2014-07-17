@@ -3,7 +3,6 @@ fcgi_app_core
 
 This is the core infrastructure for writing a FastCGI C application.
 
-
 Howto use
 ---------
 
@@ -12,31 +11,31 @@ Rename this repository to that of your project, then remove the .git directory.
 You can now continue as you would with any new project, do a clean
 initial commit etc...
 
+Build
+-----
 
-The code is in the src/ directory and builds as is. You should however first of
-all create a symlink for libctemplate to point to the directory where it's
-located. e.g
+Clone this repository
 
-If you started in ~/programming/projects when you cloned this repository,
-go back to that directory and clone libctemplate if you haven't already.
+    $ git clone https://github.com/ac000/fcgi_app_core
 
-    $ git clone git://github.com/opentechlabs/libctemplate.git
+Then you need to bulld the fcgx branch of libflate (C HTML
+tamplate library by Fabien Menemenlis)
 
-build it
-
-    $ cd libctemplate
-    $ git checkout -b otl origin/otl
+    $ git clone https://github.com/ac000/libflate
+    $ cd libflate
+    $ git checkout --track -b fcgx origin/fcgx
     $ make
-    $ ln -s libctemplate-fcgx.so.1.4.0 libctemplate-fcgx.so
-    $ ln -s libctemplate-fcgx.so.1.4.0 libctemplate-fcgx.so.1
 
 Go back into the fcgi_app_core repository and create the symlink
 
     $ cd ../fcgi_app_core/src
-    $ ln -s ../../libctemplate libctemplate
+    $ make
 
+Requirements
+------------
 
-Other things you will need to build (with at least minimal versions)
+Other things you will need to build (with at least these versions
+or newer, older versions may work)
 
     fcgi{-devel}-2.4.0
     glib2{-devel}-2.12.3
@@ -46,5 +45,12 @@ Other things you will need to build (with at least minimal versions)
     tokyocabinet{-devel}-1.4.9
 
 
-You should also rename 'app' to something more descriptive. You should also
-replace/amend this README.
+You should also rename 'app' to something more descriptive and you
+should also replace/amend this README.
+
+License
+-------
+
+This is dual licensed under the MIT License (see MIT-LICENSE.txt)
+and the GNU Affero General Public License version 3 (see
+AGPL-3.0.txt)

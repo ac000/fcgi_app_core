@@ -4,6 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
+ *		 2014		Andrew Clayton <andrew@digital-domain.net>
+ *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
@@ -36,13 +38,10 @@ void delete_user_session(unsigned int uid);
 bool user_already_exists(const char *username);
 void get_page_pagination(const char *req_page_no, int rpp, int *page_no,
 			 int *from);
-void do_pagination(TMPL_varlist *varlist, int page, int nr_pages);
-TMPL_varlist *do_zebra(TMPL_varlist *varlist, unsigned long row);
-TMPL_varlist *add_html_var(TMPL_varlist *varlist, const char *name,
-			   const char *value);
-void de_xss(const char *value, FCGX_Stream *out);
-char *xss_safe_string(const char *string);
-void send_template(const char *template, TMPL_varlist *varlist,
-		   TMPL_fmtlist *fmtlist);
+void do_pagination(Flate *f, int page, int nr_pages);
+void do_zebra(Flate *f, unsigned long row, char *zebra);
+char *de_xss(const char *value);
+void send_template(Flate *f);
+void send_page(char *file);
 
 #endif /* _UTILS_H_ */
