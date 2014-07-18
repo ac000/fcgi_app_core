@@ -1,0 +1,107 @@
+fcgi_app_core provides a mechanism for splitting a result set say over
+multiple pages.
+
+In src/utils.h there is a structure defined as (reformatted here)
+
+    struct pagination {
+	    /* Page requested by client */
+            int requested_page;
+	    /* Page being returned to client */
+            int page_no;
+	    /* Rows to show on each page */
+            int rows_per_page;
+	    /* Number of pages across result set */
+            int nr_pages;
+	    /* Index into the result set to start from */
+            int from;
+    };
+
+in src/utils.c there are two functions used in dealing with pagination
+
+    void get_page_pagination(struct pagination *pn);
+    void do_pagination(Flate *f, const struct pagination *pn);
+
+get_page_pagination will using some of the values filled out in the
+pagination structure fill in some of the other values.
+
+do_pagination sets the previous and next page variables to their values
+that are picked up in the HTML template.
+
+You start by creating a struct pagination variable then you need to fill
+in some of the fields; requested_page & rows_per_page
+
+get_page_pagination will fill in; page_no & from
+
+page_no is what is actually going to be shown to the user, if for example
+they tried to view a page that doesn;t exist, it will show them the first
+page.
+
+from is used as an index into the overall result set where to start showing
+results from.
+
+You also need to fill in nr_pages, you can only do this once you know the
+total number of rows you have to display.
+
+Example of use, normally you results are going to come from a database, but
+really they can come from anywhere.
+
+    struct pagination pn;
+    ...
+
+    pn.requested_page = atoi(get_var(qvars, "page_no"));
+    pn.rows_per_page = NR_ROWS_PER_PAGE;
+    get_page_pagination(&pn);
+
+    /* Do database query to get results and total number of rows */
+    res = sql_query("SELECT (SELECT COUNT(*) FROM table) AS nrows, col1, "
+	"col2, col3 FROM table LIMIT %d, %d", pn.from, pn.rows_per_page);
+
+    row = mysql_fetch_row(res);
+    pn.nr_pages = ceilf((float)atoi(row[0]) / (float)pn.rows_per_page);
+
+    mysql_data_seek(res, 0)
+    nr_rows = mysql_num_rows(res);
+    for (i = 0; i < nr_rows; i++) {
+	GHashTable *db_row = get_dbrow(res);
+	lf_set_var(f, "col1", get_var(db_row, "col1"), NULL);
+	lf_set_var(f, "col2", get_var(db_row, "col2"), NULL);
+	lf_set_var(f, "col3", get_var(db_row, "col3"), de_xss);
+	do_zebra(f, i, "listzebra");
+	lf_set_row(f, "results");
+	free_vars(db_row);
+    }
+    do_pagination(f, &pn);
+    ...
+
+then in your html you would have something like
+
+    <html>
+    <head>
+        <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8" />
+	<link href = "site.css" rel = "stylesheet" type = "text/css" />
+    </head>
+    <body>
+
+    <table>
+    <!-- #BEGINTABLE results -->
+    <tr class = "##zebra##">
+        <td>##col1##</td>
+        <td>##col2##</td>
+	<td>##col3##</td>
+    </tr>
+    <!-- #ENDTABLE results -->
+    </table>
+
+    <!-- #BEGINZONE multi_page -->
+    <P />
+    Previous page: ##prev_page## :: Next page: ##next_page##
+    <!-- #ENDZONE multi_page -->
+
+</body>
+</html>
+
+In the above ##zebra## comes from do_zebra() and will be either "" or
+"listzebra" as specified. multi_page comes from do_pagination() if there
+is only one page worth of results then it won't be set. ##prev_page## and
+##next_page## also come from do_pagination. In reality you'd make those
+links, setting the ?page_no= query value to their respective values.
