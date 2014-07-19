@@ -888,8 +888,7 @@ void do_pagination(Flate *f, const struct pagination *pn)
 /*
  * Create a zebra list with alternating highlighted rows.
  *
- * If varlist is NULL it returns a _new_ varlist otherwise
- * it returns _the_ varlist.
+ * Even numbered rows are highligted.
  */
 void do_zebra(Flate *f, unsigned long row, char *zebra)
 {
