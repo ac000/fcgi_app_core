@@ -8,8 +8,24 @@ Howto use
 
 Rename this repository to that of your project, then remove the .git directory.
 
-You can now continue as you would with any new project, do a clean
-initial commit etc...
+You should also rename 'app' to something more descriptive and you should
+also replace/amend this README.
+
+You can now continue as you would with any new project, do a clean initial
+commit etc...
+
+Requirements
+------------
+
+Things you will need to build (with at least these versions or newer, older
+versions may work)
+
+    fcgi{-devel}-2.4.0
+    glib2{-devel}-2.12.3
+    gmime{-devel}-2.2.25
+    mhash{-devel}-0.9.9
+    mysql{-devel}-5.0.77
+    tokyocabinet{-devel}-1.4.9
 
 Build
 -----
@@ -26,27 +42,10 @@ tamplate library by Fabien Menemenlis)
     $ git checkout --track -b fcgx origin/fcgx
     $ make
 
-Go back into the fcgi_app_core repository and create the symlink
+Go back into the fcgi_app_core repository and it should now build
 
     $ cd ../fcgi_app_core/src
     $ make
-
-Requirements
-------------
-
-Other things you will need to build (with at least these versions
-or newer, older versions may work)
-
-    fcgi{-devel}-2.4.0
-    glib2{-devel}-2.12.3
-    gmime{-devel}-2.2.25
-    mhash{-devel}-0.9.9
-    mysql{-devel}-5.0.77
-    tokyocabinet{-devel}-1.4.9
-
-
-You should also rename 'app' to something more descriptive and you
-should also replace/amend this README.
 
 License
 -------
