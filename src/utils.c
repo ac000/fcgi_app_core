@@ -874,15 +874,24 @@ void get_page_pagination(struct pagination *pn)
  */
 void do_pagination(Flate *f, const struct pagination *pn)
 {
-	if (IS_MULTI_PAGE(pn->nr_pages)) {
+	int nr_pages = pn->nr_pages;
+
+	if (IS_MULTI_PAGE(nr_pages)) {
 		char page_no[10];
 		int rqpage = pn->page_no;
 
-		if (!IS_FIRST_PAGE(rqpage)) {
+		if (IS_FIRST_PAGE(rqpage)) {
+			/* Wrap around to end */
+			snprintf(page_no, sizeof(page_no), "%d", nr_pages);
+			lf_set_var(f, "prev_page", page_no, NULL);
+		} else if (!IS_FIRST_PAGE(rqpage)) {
 			snprintf(page_no, sizeof(page_no), "%d", rqpage - 1);
 			lf_set_var(f, "prev_page", page_no, NULL);
 		}
-		if (!IS_LAST_PAGE(rqpage, pn->nr_pages)) {
+		if (IS_LAST_PAGE(rqpage, nr_pages)) {
+			/* Wrap around to start */
+			lf_set_var(f, "next_page", "1", NULL);
+		} else if (!IS_LAST_PAGE(rqpage, nr_pages)) {
 			snprintf(page_no, sizeof(page_no), "%d", rqpage + 1);
 			lf_set_var(f, "next_page", page_no, NULL);
 		}
