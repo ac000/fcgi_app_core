@@ -1,7 +1,7 @@
 Overview
 ========
 
-We currently handles three types of data sent by the client:
+We currently handle three types of data sent by the client:
 
     GET
     POST x-www-form-urlencoded
