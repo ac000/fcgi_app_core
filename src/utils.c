@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
@@ -260,47 +261,42 @@ void free_u_files(void)
  * This data is _not_ % encoded and does not require to be run
  * through url_decode. It also means we need to split on [ and
  * not its %value.
- *
- * The finalize parameter should be given as 0 while adding items.
- * Once your done, call this function with NULL and 1 as its arguments,
- * this will ensure that the last GHashTable is added to the GList.
  */
-static void add_multipart_avar(const char *name, const char *value,
-			       int finalize)
+static void add_multipart_avar(const char *name, const char *value)
 {
 	char *token;
-	char *idx;
-	static char lidx[128] = "\0";
 	char *string;
 	char *key;
-	static GHashTable *query_values = NULL;
-
-	if (finalize) {
-		avars = g_list_append(avars, query_values);
-		memset(lidx, '\0', sizeof(lidx));
-		return;
-	}
+	GHashTable *ht;
+	GQuark qidx;
+	bool new = false;
 
 	string = strdupa(name);
 
 	token = strtok(string, "[");
-	idx = strdupa(token);
-	if (strcmp(idx, lidx) != 0) {
-		if (lidx[0] != '\0')
-			avars = g_list_append(avars, query_values);
-		query_values = g_hash_table_new_full(g_str_hash, g_str_equal,
-				g_free, g_free);
+	qidx = g_quark_from_string(token);
+	/*
+	 * Look for an existing hash table for this variable index. We
+	 * use qidx - 1 for the array position as GQuark's start at 1
+	 */
+	ht = g_list_nth_data(avars, qidx - 1);
+	if (!ht) {
+		/* New array index, new hash table */
+		ht = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+				g_free);
+		new = true;
 	}
-	snprintf(lidx, sizeof(lidx), "%s", idx);
-	token = NULL;
 
+	token = NULL;
 	token = strtok(token, "=");
 	key = alloca(strlen(token));
 	memset(key, 0, strlen(token));
 	snprintf(key, sizeof(key), "%s", token);
 
 	d_fprintf(debug_log, "Adding key: %s with value: %s\n", key, value);
-	g_hash_table_replace(query_values, g_strdup(key), g_strdup(value));
+	g_hash_table_replace(ht, g_strdup(key), g_strdup(value));
+	if (new)
+		avars = g_list_append(avars, ht);
 }
 
 /*
@@ -323,46 +319,40 @@ static void add_multipart_var(const char *name, const char *value)
  * Add's a name=value pair to the GList (avars) of POST array variables.
  *
  * This is data that has been POST'd as x-www-form-urlencoded
- *
- * The finalize parameter should be given as 0 while adding items.
- * Once your done, call this function with NULL and 1 as its arguments,
- * this will ensure that the last GHashTable is added to the GList.
  */
-static void add_avar(const char *qvar, int finalize)
+static void add_avar(const char *qvar)
 {
 	char *token;
-	char *idx;
-	static char lidx[128] = "\0";
 	char *string;
 	char *key;
 	char *value;
-	static GHashTable *query_values = NULL;
-
-	if (finalize) {
-		avars = g_list_append(avars, query_values);
-		memset(lidx, '\0', sizeof(lidx));
-		return;
-	}
+	GHashTable *ht;
+	GQuark qidx;
+	bool new = false;
 
 	string = strdupa(qvar);
 
 	token = strtok(string, "%");
-	idx = strdupa(token);
-	if (strcmp(idx, lidx) != 0) {
-		if (lidx[0] != '\0')
-			avars = g_list_append(avars, query_values);
-		query_values = g_hash_table_new_full(g_str_hash, g_str_equal,
-				g_free, g_free);
+	qidx = g_quark_from_string(token);
+	/*
+	 * Look for an existing hash table for this variable index. We
+	 * use qidx - 1 for the array position as GQuark's start at 1
+	 */
+	ht = g_list_nth_data(avars, qidx - 1);
+	if (!ht) {
+		/* New array index, new hash table */
+		ht = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+				g_free);
+		new = true;
 	}
-	snprintf(lidx, sizeof(lidx), "%s", idx);
-	token = NULL;
 
+	token = NULL;
 	token = strtok(token, "=");
 	key = alloca(strlen(token));
 	memset(key, 0, strlen(token));
 	snprintf(key, strlen(token + 2) - 2, "%s", token + 2);
-	token = NULL;
 
+	token = NULL;
 	token = strtok(token, "=");
 	if (token)
 		value = url_decode(token);
@@ -370,7 +360,10 @@ static void add_avar(const char *qvar, int finalize)
 		value = url_decode("");
 
 	d_fprintf(debug_log, "Adding key: %s with value: %s\n", key, value);
-	g_hash_table_replace(query_values, g_strdup(key), g_strdup(value));
+	g_hash_table_replace(ht, g_strdup(key), g_strdup(value));
+	if (new)
+		avars = g_list_append(avars, ht);
+
 	free(value);
 }
 
@@ -419,21 +412,16 @@ static void process_vars(const char *query)
 	char *token;
 	char *saveptr1 = NULL;
 	char *string;
-	int avars = 0;
 
 	string = strdupa(query);
 	token = strtok_r(string, "&", &saveptr1);
 	while (token != NULL) {
-		if (strstr(token, "%5D=")) {
-			add_avar(token, 0);
-			avars = 1;
-		} else {
+		if (strstr(token, "%5D="))
+			add_avar(token);
+		else
 			add_var(token);
-		}
 		token = strtok_r(NULL, "&", &saveptr1);
 	}
-	if (avars)
-		add_avar(NULL, 1);
 }
 
 /*
@@ -498,7 +486,7 @@ static void process_mime_part(GMimeObject *part, gpointer user_data)
 		if (strstr(g_mime_disposition_get_parameter(
 						disposition, "name"), "["))
 			add_multipart_avar(g_mime_disposition_get_parameter(
-						disposition, "name"), buf, 0);
+						disposition, "name"), buf);
 		else
 			add_multipart_var(g_mime_disposition_get_parameter(
 						disposition, "name"), buf);
@@ -579,8 +567,6 @@ void set_vars(void)
 		process_vars(buf);
 	} else if (strstr(env_vars.content_type, "multipart/form-data")) {
 		process_mime();
-		if (g_list_length(avars) > 0)
-			add_multipart_avar(NULL, NULL, 1);
 	}
 }
 
