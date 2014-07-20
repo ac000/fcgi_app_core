@@ -22,7 +22,7 @@ versions may work)
 
     fcgi{-devel}-2.4.0
     glib2{-devel}-2.28.8
-    gmime{-devel}-2.2.25
+    gmime{-devel}-2.6.20
     mhash{-devel}-0.9.9
     mysql{-devel}-5.0.77
     tokyocabinet{-devel}-1.4.9
