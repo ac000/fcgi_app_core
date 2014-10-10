@@ -5,11 +5,16 @@
 </head>
 <body>
 	<center>
-<tmpl_if name = "logged_in" value = "no">
+	<!-- #BEGINZONE auth_fail -->
 	<big><span class = "input_error">Login Failure. Please try again</span></big><p />
-<tmpl_elsif name = "enabled" value = "no">
+	<!-- #ENDZONE auth_fail -->
+	<!-- #BEGINZONE acc_disab -->
 	<big><span class = "input_error">Account has been disabled</span></big><p />
-</tmpl_if>
+	<!-- #ENDZONE acc_disab -->
+	<!-- #BEGINZONE ipacl_deny -->
+	<big><span class = "input_error">Access Denied From ##rip##</span></big><p />
+	<!-- #ENDZONE ipacl_deny -->
+
 	<big><i>Welcome to</i> <big>app</big></big><p />
 	<form action = "/login/" method = "POST">
 	<table>
@@ -26,7 +31,7 @@
 	</table>
 	<small>Restrict this session to your IP address: <input type =
 		"checkbox" name = "restrict_ip" value = "true" checked /><br />
-		(<tmpl_var name = "rip" />)
+		(##rip##)
 	</small>
 	<p />
 	<input type = "submit" value = "Open Sesame" />
@@ -45,7 +50,7 @@
 	</div>
 
 	<footer>
-	<small>© OpenTech Labs 2012.</small>
+	<small>© digital-domain.net 2014.</small>
 	</footer>
 </body>
 </html>

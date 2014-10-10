@@ -61,10 +61,12 @@ static void login(void)
 
 	lf_set_tmpl(&f, "templates/login.tmpl");
 	if (ret == -1)
-		lf_set_var(f, "logged_in", "no", NULL);
+		lf_set_var(f, "auth_fail", "", NULL);
 	if (ret == -2)
-		lf_set_var(f, "enabled", "no", NULL);
-	lf_set_var(f, "rip", env_vars.remote_addr, NULL);
+		lf_set_var(f, "acc_disab", "", NULL);
+	if (ret == -3)
+		lf_set_var(f, "ipacl_deny", "", NULL);
+	lf_set_var(f, "rip", env_vars.remote_addr, de_xss);
 
 	send_template(f);
 	lf_free(f);
