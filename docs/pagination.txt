@@ -1,4 +1,4 @@
-fcgi_app_core provides a mechanism for splitting a result set say over
+fcgi_app_core provides a mechanism for splitting a result set over
 multiple pages.
 
 In src/utils.h there is a structure defined as (reformatted here)
@@ -42,7 +42,7 @@ results from.
 You also need to fill in nr_pages, you can only do this once you know the
 total number of rows you have to display.
 
-Example of use, normally you results are going to come from a database, but
+Example of use, normally your results are going to come from a database, but
 really they can come from anywhere.
 
     struct pagination pn;
@@ -63,6 +63,7 @@ really they can come from anywhere.
     nr_rows = mysql_num_rows(res);
     for (i = 0; i < nr_rows; i++) {
 	GHashTable *db_row = get_dbrow(res);
+
 	lf_set_var(f, "col1", get_var(db_row, "col1"), NULL);
 	lf_set_var(f, "col2", get_var(db_row, "col2"), NULL);
 	lf_set_var(f, "col3", get_var(db_row, "col3"), de_xss);
@@ -72,6 +73,21 @@ really they can come from anywhere.
     }
     do_pagination(f, &pn);
     ...
+
+If you had an array of data you wanted to use as the source there is a
+macro to help faciliate this. e.g the above loop might look something like
+
+    for_each_table_row(i, pn, datums) {
+	lf_set_var(f, "col1", data[i].val1, NULL);
+	lf_set_var(f, "col2", data[i].val2, NULL);
+	lf_set_var(f, "col3", data[i].val3, de_xss);
+	do_zebra(f, i, "listzebra");
+	lf_set_row(f, "results");
+    }
+
+i is the loop index and is set to the value of pn.from, pn is the pagination
+structure and datums is the total number of items being displayed across all
+pages.
 
 then in your html you would have something like
 

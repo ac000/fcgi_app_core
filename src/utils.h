@@ -13,6 +13,16 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+/*
+ * Macro to simplify creating paginated table row data
+ *
+ * i      - The loop index
+ * pn     - The pagination structure
+ * datums - The _total_ number of items being displayed across _all_ pages
+ */
+#define for_each_table_row(i, pn, datums) \
+	for (i = pn.from; i < pn.from + pn.rows_per_page && i < datums; i++)
+
 /* Pagination macro's */
 #define IS_MULTI_PAGE(nr_pages)		(((nr_pages) > 1) ? 1 : 0)
 #define IS_FIRST_PAGE(page)		(((page) == 1) ? 1 : 0)
