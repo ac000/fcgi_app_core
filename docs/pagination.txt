@@ -21,7 +21,7 @@ in src/utils.c there are two functions used in dealing with pagination
     void get_page_pagination(struct pagination *pn);
     void do_pagination(Flate *f, const struct pagination *pn);
 
-get_page_pagination will using some of the values filled out in the
+get_page_pagination will, using some of the values filled out in the
 pagination structure fill in some of the other values.
 
 do_pagination sets the previous and next page variables to their values
@@ -33,7 +33,7 @@ in some of the fields; requested_page & rows_per_page
 get_page_pagination will fill in; page_no & from
 
 page_no is what is actually going to be shown to the user, if for example
-they tried to view a page that doesn;t exist, it will show them the first
+they tried to view a page that doesn't exist, it will show them the first
 page.
 
 from is used as an index into the overall result set where to start showing
