@@ -12,7 +12,7 @@ Entries can be either IPv4 or IPv6 IP addresses or networks. e.g
     192.168.1.10
     2a01:7e00::/64
 
-entries can also be commented out by appending a '#' to the entry e.g
+entries can also be commented out by pre-pending a '#' to the entry e.g
 
     #10.1.2.3
 
