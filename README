@@ -34,8 +34,8 @@ Clone this repository
 
     $ git clone https://github.com/ac000/fcgi_app_core
 
-Then you need to bulld the fcgx branch of libflate (C HTML
-tamplate library by Fabien Menemenlis)
+Then you need to bulld the fcgx branch of libflate (C HTML template library
+by Fabien Menemenlis)
 
     $ git clone https://github.com/ac000/libflate
     $ cd libflate
