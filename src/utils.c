@@ -269,7 +269,6 @@ static void add_multipart_avar(const char *name, const char *value)
 {
 	char *token;
 	char *string;
-	char *key;
 	GHashTable *ht;
 	GQuark qidx;
 	bool new = false;
@@ -292,12 +291,9 @@ static void add_multipart_avar(const char *name, const char *value)
 
 	token = NULL;
 	token = strtok(token, "=");
-	key = alloca(strlen(token));
-	memset(key, 0, strlen(token));
-	snprintf(key, sizeof(key), "%s", token);
 
-	d_fprintf(debug_log, "Adding key: %s with value: %s\n", key, value);
-	g_hash_table_replace(ht, g_strdup(key), g_strdup(value));
+	d_fprintf(debug_log, "Adding key: %s with value: %s\n", token, value);
+	g_hash_table_replace(ht, g_strdup(token), g_strdup(value));
 	if (new)
 		avars = g_list_append(avars, ht);
 }
