@@ -10,6 +10,8 @@
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
 
+#define _GNU_SOURCE 1
+
 #include <stdio.h>
 #include <limits.h>
 #include <stdlib.h>
