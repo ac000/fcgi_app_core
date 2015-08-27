@@ -27,4 +27,4 @@ can be used and similarly when extracting the list
 	list FROM passwd, ipacl WHERE passwd.uid = %u AND \
 	ipacl.uid = passwd.uid
 
-The ACL check is performed transparently via the chec_auth() function.
+The ACL check is performed transparently via the check_auth() function.
