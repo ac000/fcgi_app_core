@@ -40,7 +40,8 @@
  *	 0 for a match
  *	-1 for no match
  */
-static int match_ipv6(const char *ip, const char *network, unsigned short cidr)
+static int match_ipv6(const char *ip, const char *network,
+		      unsigned short prefixlen)
 {
 	unsigned char ip6b[sizeof(struct in6_addr)];
 	unsigned char *p = ip6b;
@@ -48,11 +49,11 @@ static int match_ipv6(const char *ip, const char *network, unsigned short cidr)
 
 	inet_pton(AF_INET6, ip, ip6b);
 
-	p += cidr / 8;
-	cidr %= 8;
+	p += prefixlen / 8;
+	prefixlen %= 8;
 
-	if (cidr !=  0)
-		*p &= 0xff << (8 - cidr);
+	if (prefixlen !=  0)
+		*p &= 0xff << (8 - prefixlen);
 
 	while (p < ip6b + sizeof(ip6b))
 		*p++ = 0;
