@@ -17,10 +17,11 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
-#include <arpa/inet.h>
+#include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
 #include <netdb.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #include <pthread.h>
 
 #include <flate.h>
@@ -302,26 +303,16 @@ static void *log_utmp_host(void *arg)
 {
 	char *hostname;
 	char host[NI_MAXHOST] = "\0";
-	struct sockaddr_in addr4;
-	struct sockaddr_in6 addr6;
-	struct sockaddr *addr = (struct sockaddr *)&addr4;
+	struct addrinfo hints;
+	struct addrinfo *res;
 	struct utmp_info *ui = (struct utmp_info *)arg;
-	socklen_t addr_len = sizeof(addr4);
 	MYSQL *db;
 
-	if (!strchr(ui->ip, ':')) {
-		/* IPv4 */
-		inet_pton(AF_INET, ui->ip, &addr4.sin_addr);
-		addr4.sin_family = AF_INET;
-	} else {
-		/* IPv6 */
-		inet_pton(AF_INET6, ui->ip, &addr6.sin6_addr);
-		addr6.sin6_family = AF_INET6;
-
-		addr = (struct sockaddr *)&addr6;
-		addr_len = sizeof(addr6);
-	}
-	getnameinfo(addr, addr_len, host, NI_MAXHOST, NULL, 0, 0);
+	memset(&hints, 0, sizeof(struct addrinfo));
+	hints.ai_family = AF_UNSPEC;
+	getaddrinfo(ui->ip, NULL, &hints, &res);
+	getnameinfo(res->ai_addr, res->ai_addrlen, host, NI_MAXHOST, NULL, 0,
+			0);
 
 	db = db_conn();
 	hostname = make_mysql_safe_string(host);
@@ -330,6 +321,7 @@ static void *log_utmp_host(void *arg)
 	mysql_close(db);
 	free(hostname);
 	free(ui);
+	freeaddrinfo(res);
 
 	return 0;
 }
