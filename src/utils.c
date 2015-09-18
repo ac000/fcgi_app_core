@@ -4,7 +4,7 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- *			2014	Andrew Clayton <andrew@digital-domain.net>
+ *		 2014 - 2015	Andrew Clayton <andrew@digital-domain.net>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
@@ -46,58 +46,6 @@ GList *u_files;
 GList *avars;
 /* Hash table to hold name=value pairs of POST/GET variables. */
 GHashTable *qvars;
-
-/*
- * Function comes from: http://www.geekhideout.com/urlcode.shtml
- * Will replace with g_uri_unescape_string() from glib when we have
- * glib 2.16
- *
- * Converts a hex character to its integer value
- */
-static char from_hex(char ch)
-{
-	return isdigit(ch) ? ch - '0' : tolower(ch) - 'a' + 10;
-}
-
-/*
- * Function comes from: http://www.geekhideout.com/urlcode.shtml
- * Will replace with g_uri_unescape_string() from glib when we have
- * glib 2.16
- *
- * Returns a url-decoded version of str
- *
- * IMPORTANT: be sure to free() the returned string after use
- */
-static char *url_decode(const char *str)
-{
-	char *buf;
-	char *pbuf;
-
-	buf = malloc(strlen(str) + 1);
-	if (!buf) {
-		perror("malloc");
-		_exit(EXIT_FAILURE);
-	}
-	pbuf = buf;
-
-	while (*str) {
-		if (*str == '%') {
-			if (str[1] && str[2]) {
-				*pbuf++ = from_hex(str[1]) << 4 |
-					from_hex(str[2]);
-				str += 2;
-			}
-		} else if (*str == '+') {
-			*pbuf++ = ' ';
-		} else {
-			*pbuf++ = *str;
-		}
-		str++;
-	}
-	*pbuf = '\0';
-
-	return buf;
-}
 
 /*
  * Given a hostname like host.example.com it returns just 'host'
@@ -354,16 +302,16 @@ static void add_avar(const char *qvar)
 	token = NULL;
 	token = strtok(token, "=");
 	if (token)
-		value = url_decode(token);
+		value = g_uri_unescape_string(token, NULL);
 	else
-		value = url_decode("");
+		value = g_strdup("");
 
 	d_fprintf(debug_log, "Adding key: %s with value: %s\n", key, value);
 	g_hash_table_replace(ht, g_strdup(key), g_strdup(value));
 	if (new)
 		avars = g_list_append(avars, ht);
 
-	free(value);
+	g_free(value);
 }
 
 /*
@@ -389,13 +337,13 @@ static void add_var(const char *qvar)
 
 	token = strtok(token, "=");
 	if (token)
-		value = url_decode(token);
+		value = g_uri_unescape_string(token, NULL);
 	else
-		value = url_decode("");
+		value = g_strdup("");
 
 	d_fprintf(debug_log, "Adding key: %s with value: %s\n", key, value);
 	g_hash_table_replace(qvars, g_strdup(key), g_strdup(value));
-	free(value);
+	g_free(value);
 }
 
 /*
