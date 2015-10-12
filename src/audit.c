@@ -288,7 +288,7 @@ out3:
 }
 
 struct utmp_info {
-	char ip[INET6_ADDRSTRLEN + 1];	/* IP address of client */
+	char ip[INET6_ADDRSTRLEN];	/* IP address of client */
 	unsigned long long sid;		/* Session ID of client */
 };
 
