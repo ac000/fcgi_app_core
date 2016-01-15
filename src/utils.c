@@ -336,7 +336,7 @@ static void add_avar(const char *qvar)
 	token = strtok(token, "=");
 	key = alloca(strlen(token));
 	memset(key, 0, strlen(token));
-	snprintf(key, strlen(token), "%s", token + 2);
+	snprintf(key, strlen(token + 2) - 2, "%s", token + 2);
 
 	token = NULL;
 	token = strtok(token, "=");
