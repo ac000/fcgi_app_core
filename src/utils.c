@@ -4,7 +4,7 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- *		 2014 - 2015	Andrew Clayton <andrew@digital-domain.net>
+ *		 2014 - 2016	Andrew Clayton <andrew@digital-domain.net>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
@@ -37,6 +37,12 @@
 #include "common.h"
 #include "utils.h"
 
+struct quark {
+	GHashTable *q;
+	int last;
+};
+static struct quark quarks;
+
 /* Linked list to store file_info structures. */
 GList *u_files;
 /*
@@ -46,6 +52,34 @@ GList *u_files;
 GList *avars;
 /* Hash table to hold name=value pairs of POST/GET variables. */
 GHashTable *qvars;
+
+/*
+ * A simplified version of GLibs GQuark.
+ *
+ * Maps strings to integers starting at 0. The same string will map to the
+ * same integer.
+ */
+static int quark_from_string(const char *str)
+{
+	gpointer q;
+
+	if (!quarks.q) {
+		quarks.q = g_hash_table_new_full(g_str_hash, g_str_equal,
+				g_free, NULL);
+		quarks.last = 0;
+	}
+
+	q = g_hash_table_lookup(quarks.q, str);
+	if (!q) {
+		quarks.last += 1;
+		g_hash_table_insert(quarks.q, g_strdup(str),
+				GINT_TO_POINTER(quarks.last));
+
+		return quarks.last - 1;
+	} else {
+		return GPOINTER_TO_INT(q) - 1;
+	}
+}
 
 /*
  * Given a hostname like host.example.com it returns just 'host'
@@ -162,6 +196,11 @@ void free_avars(void)
 	unsigned int i;
 	unsigned int size;
 
+	if (quarks.q) {
+		g_hash_table_destroy(quarks.q);
+		quarks.q = NULL;
+	}
+
 	if (!avars)
 		return;
 
@@ -218,18 +257,18 @@ static void add_multipart_avar(const char *name, const char *value)
 	char *token;
 	char *string;
 	GHashTable *ht;
-	GQuark qidx;
 	bool new = false;
+	int qidx;
 
 	string = strdupa(name);
 
 	token = strtok(string, "[");
-	qidx = g_quark_from_string(token);
+	qidx = quark_from_string(token);
 	/*
 	 * Look for an existing hash table for this variable index. We
 	 * use qidx - 1 for the array position as GQuark's start at 1
 	 */
-	ht = g_list_nth_data(avars, qidx - 1);
+	ht = g_list_nth_data(avars, qidx);
 	if (!ht) {
 		/* New array index, new hash table */
 		ht = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
@@ -274,18 +313,18 @@ static void add_avar(const char *qvar)
 	char *key;
 	char *value;
 	GHashTable *ht;
-	GQuark qidx;
 	bool new = false;
+	int qidx;
 
 	string = strdupa(qvar);
 
 	token = strtok(string, "%");
-	qidx = g_quark_from_string(token);
+	qidx = quark_from_string(token);
 	/*
 	 * Look for an existing hash table for this variable index. We
 	 * use qidx - 1 for the array position as GQuark's start at 1
 	 */
-	ht = g_list_nth_data(avars, qidx - 1);
+	ht = g_list_nth_data(avars, qidx);
 	if (!ht) {
 		/* New array index, new hash table */
 		ht = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
