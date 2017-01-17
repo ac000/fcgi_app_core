@@ -4,6 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
+ *		 2016		Andrew Clayton <andrew@digital-domain.net>
+ *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
  */
@@ -12,6 +14,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -155,7 +158,7 @@ static void dump_session_state(void)
 		int rsize;
 		const char *rbuf = tclistval(res, i, &rsize);
 		TCMAP *cols = tctdbget(tdb, rbuf, rsize);
-		unsigned char capabilities = atoi(tcmapget2(
+		uint8_t capabilities = atoi(tcmapget2(
 					cols, "capabilities"));
 
 		tcmapiterinit(cols);

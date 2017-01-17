@@ -4,7 +4,7 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- * 		 2014		Andrew Clayton <andrew@digital-domain.net>
+ * 		 2014, 2016	Andrew Clayton <andrew@digital-domain.net>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 
 #include <flate.h>
@@ -68,7 +69,7 @@ static void generate_csrf_token(char *csrf_token)
 	snprintf(sid, sizeof(sid), "%llu", user_session.sid);
 	snprintf(restrict_ip, sizeof(restrict_ip), "%d",
 			user_session.restrict_ip);
-	snprintf(capabilities, sizeof(capabilities), "%d",
+	snprintf(capabilities, sizeof(capabilities), "%u",
 			user_session.capabilities);
 	generate_hash(csrf_token, SHA1);
 	cols = tcmapnew3("tenant", user_session.tenant,
