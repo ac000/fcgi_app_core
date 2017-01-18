@@ -114,8 +114,7 @@ void add_csrf_token(Flate *f)
  */
 bool valid_csrf_token(void)
 {
-	if (strcmp(get_var(qvars, "csrf_token"),
-				user_session.csrf_token) == 0)
+	if (strcmp(get_var(qvars, "csrf_token"), user_session.csrf_token) == 0)
 		return true;
 	else
 		return false;
