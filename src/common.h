@@ -41,9 +41,7 @@
 #define SHA1_LEN	40
 #define SHA256_LEN	64
 
-#define SHA1		 1
-#define SHA256		 5
-#define SHA512		10
+enum { SHA1, SHA256, SHA512 };
 
 /*
  * These three define the number of nanoseconds in a second,
