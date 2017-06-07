@@ -378,14 +378,14 @@ static void add_avar(const char *qvar)
 	ht = g_list_nth_data(avars, qidx);
 	if (!ht) {
 		/* New array index, new hash table */
-		ht = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+		ht = g_hash_table_new_full(g_str_hash, g_str_equal, free,
 				free);
 		new = true;
 	}
 
 	token = NULL;
 	token = strtok(token, "=");
-	key = alloca(strlen(token));
+	key = malloc(strlen(token));
 	memset(key, 0, strlen(token));
 	snprintf(key, strlen(token + 2) - 2, "%s", token + 2);
 
@@ -397,7 +397,7 @@ static void add_avar(const char *qvar)
 		value = strdup("");
 
 	d_fprintf(debug_log, "Adding key: %s with value: %s\n", key, value);
-	g_hash_table_replace(ht, g_strdup(key), value);
+	g_hash_table_replace(ht, key, value);
 	if (new)
 		avars = g_list_append(avars, ht);
 }
