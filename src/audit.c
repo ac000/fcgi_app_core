@@ -458,7 +458,7 @@ void create_session(unsigned long long sid)
 	MYSQL_RES *res;
 	TCTDB *tdb;
 	TCMAP *cols;
-	GHashTable *db_row = NULL;
+	GHashTable *db_row;
 
 	username = make_mysql_safe_string(get_var(qvars, "username"));
 	res = sql_query("SELECT uid, name, capabilities FROM passwd WHERE "
