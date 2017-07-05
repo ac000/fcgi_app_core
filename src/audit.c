@@ -4,7 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- * 		 2014, 2016	Andrew Clayton <andrew@digital-domain.net>
+ * 		 2014, 2016 - 2017	Andrew Clayton
+ * 		 			<andrew@digital-domain.net>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
@@ -22,7 +23,6 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include <netinet/in.h>
 #include <pthread.h>
 
 #include <flate.h>
@@ -75,14 +75,14 @@ static int match_ipv6(const char *ip, const char *network, uint8_t prefixlen)
  */
 static int match_ipv4(const char *ip, const char *network, unsigned short cidr)
 {
-	struct in_addr addr;
-	uint32_t n_addr;
+	struct in_addr ip_addr;
+	struct in_addr net_addr;
 
-	inet_aton(ip, &addr);
-	n_addr = addr.s_addr & htonl(~0UL << (32 - cidr));
-	addr.s_addr = n_addr;
+	inet_pton(AF_INET, network, &net_addr);
+	inet_pton(AF_INET, ip, &ip_addr);
 
-	if (strcmp(network, inet_ntoa(addr)) == 0)
+	ip_addr.s_addr &= htonl(~0UL << (32 - cidr));
+	if (ip_addr.s_addr == net_addr.s_addr)
 		return 0;
 	else
 		return -1;
