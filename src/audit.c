@@ -4,8 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- * 		 2014, 2016 - 2017	Andrew Clayton
- * 		 			<andrew@digital-domain.net>
+ * 		 2014, 2016 - 2017, 2019	Andrew Clayton
+ * 		 				<andrew@digital-domain.net>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
