@@ -30,6 +30,10 @@
 #include "db.h"
 #include "utils.h"
 
+#define __unused		__attribute__((unused))
+#define __maybe_unused		__attribute__((unused))
+#define __always_unused		__attribute__((unused))
+
 #define BUF_SIZE	4096
 #define SQL_MAX		8192
 #define ENTROPY_SIZE	   8
