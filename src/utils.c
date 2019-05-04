@@ -189,10 +189,10 @@ char *generate_hash(char *hash, int type)
 	int fd;
 	int i;
 	int hbs;
+	int len = 0;
 	int hash_len;
 	ssize_t bytes_read;
 	char buf[ENTROPY_SIZE];
-	char ht[3];
 	unsigned char *xhash;
 	MHASH td;
 
@@ -230,10 +230,8 @@ char *generate_hash(char *hash, int type)
 	xhash = mhash_end(td);
 
 	memset(hash, 0, hash_len + 1);
-	for (i = 0; i < hbs; i++) {
-		sprintf(ht, "%.2x", xhash[i]);
-		strncat(hash, ht, 2);
-	}
+	for (i = 0; i < hbs; i++)
+		len += snprintf(hash + len, 3, "%.2x", xhash[i]);
 	free(xhash);
 
 	return hash;
