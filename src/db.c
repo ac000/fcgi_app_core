@@ -46,7 +46,7 @@ static MYSQL *__db_conn(int db_conn_type)
 		char db[sizeof(tenant) + 3] = "rm_";
 
 		get_tenant(env_vars.host, tenant);
-		strncat(db, tenant, TENANT_MAX);
+		strncat(db, tenant, sizeof(db) - strlen(db) - 1);
 		free(db_name);
 		db_name = strdup(db);
 	}
