@@ -104,6 +104,7 @@ MYSQL_RES *__sql_query(MYSQL *dbconn, const char *func, const char *fmt, ...)
 	va_list args;
 	char sql[SQL_MAX];
 	int len;
+	MYSQL *dbc = conn;
 
 	va_start(args, fmt);
 	len = vsnprintf(sql, sizeof(sql), fmt, args);
@@ -122,6 +123,9 @@ MYSQL_RES *__sql_query(MYSQL *dbconn, const char *func, const char *fmt, ...)
 		fflush(sql_log);
 	}
 
-	mysql_real_query(conn, sql, len);
-	return mysql_store_result(conn);
+	if (dbconn)
+		dbc = dbconn;
+	mysql_real_query(dbc, sql, len);
+
+	return mysql_store_result(dbc);
 }
