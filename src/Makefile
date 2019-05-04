@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Wdeclaration-after-statement -Wvla -std=c99 -O2 -g -Wp,-D_FORTIFY_SOURCE=2 -D_FILE_OFFSET_BITS=64 -D_HAVE_FCGX -fexceptions -fstack-protector --param=ssp-buffer-size=4 -fPIC
+CFLAGS=-Wall -Wextra -Wdeclaration-after-statement -Wvla -std=c99 -O2 -g -Wp,-D_FORTIFY_SOURCE=2 -D_FILE_OFFSET_BITS=64 -D_HAVE_FCGX -fexceptions -fstack-protector --param=ssp-buffer-size=4 -fPIC
 LDFLAGS=-Wl,-z,relro -Wl,-z,now -pie
 LIBS=-L../../libflate `pkg-config --libs glib-2.0` `pkg-config --libs gmime-2.6` `mysql_config --libs` -lm -lrt -lcrypt -lfcgi -lmhash -ltokyocabinet -lflate -pthread
 INCS=-I../../libflate `pkg-config --cflags glib-2.0` `pkg-config --cflags gmime-2.6` `mysql_config --cflags`
