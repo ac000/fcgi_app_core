@@ -77,12 +77,14 @@ enum { SHA1, SHA256, SHA512 };
  */
 #define d_fprintf(stream, fmt, ...) \
 	do { \
-		if (stream == debug_log && !DEBUG_LEVEL) \
-			break; \
-		time_t secs = time(NULL); \
-		struct tm *tm = localtime(&secs); \
+		time_t secs; \
+		struct tm *tm; \
 		char ts_buf[32]; \
 		char tenant[TENANT_MAX + 1]; \
+		if (stream == debug_log && !DEBUG_LEVEL) \
+			break; \
+		secs = time(NULL); \
+		tm = localtime(&secs); \
 		get_tenant(env_vars.host, tenant); \
 		strftime(ts_buf, sizeof(ts_buf), "%F %T %z", tm); \
 		fprintf(stream, "[%s] %d %s %s: " fmt, ts_buf, getpid(), \
