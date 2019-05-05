@@ -158,8 +158,7 @@ static void dump_session_state(void)
 		int rsize;
 		const char *rbuf = tclistval(res, i, &rsize);
 		TCMAP *cols = tctdbget(tdb, rbuf, rsize);
-		uint8_t capabilities = atoi(tcmapget2(
-					cols, "capabilities"));
+		u8 capabilities = atoi(tcmapget2(cols, "capabilities"));
 
 		tcmapiterinit(cols);
 

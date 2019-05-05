@@ -26,6 +26,7 @@
 
 #include <glib.h>
 
+#include "short_types.h"
 #include "app_config.h"
 #include "db.h"
 #include "utils.h"

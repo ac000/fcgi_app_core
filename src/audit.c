@@ -41,7 +41,7 @@
  *	 0 for a match
  *	-1 for no match
  */
-static int match_ipv6(const char *ip, const char *network, uint8_t prefixlen)
+static int match_ipv6(const char *ip, const char *network, u8 prefixlen)
 {
 	int i;
 	unsigned char netb[sizeof(struct in6_addr)];
@@ -53,7 +53,7 @@ static int match_ipv6(const char *ip, const char *network, uint8_t prefixlen)
 
 	/* Create a mask based on prefixlen */
 	for (i = 0; i < 16; i++) {
-		uint8_t s = (prefixlen > 8) ? 8 : prefixlen;
+		u8 s = (prefixlen > 8) ? 8 : prefixlen;
 
 		prefixlen -= s;
 		maskb[i] = (0xffu << (8 - s));
