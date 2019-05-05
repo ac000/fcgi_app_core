@@ -14,9 +14,13 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+#define _GNU_SOURCE	1
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdarg.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <time.h>
@@ -126,6 +130,8 @@ extern GHashTable *qvars;
 
 extern struct env_vars env_vars;
 
+#define d_fprintf(stream, fmt, ...) \
+	__d_fprintf(stream, (const char *)__func__, fmt, ##__VA_ARGS__)
 /*
  * Wrapper around fprintf(). It will prepend the text passed it with
  * [datestamp] pid function:
@@ -134,23 +140,43 @@ extern struct env_vars env_vars;
  * You will get:
  *
  * [2013-07-04 00:01:40 +0100] 1843 main: This is a test
+ *
+ * call this as d_fprintf(stream, fmt, ...)
  */
-#define d_fprintf(stream, fmt, ...) \
-	do { \
-		time_t secs; \
-		struct tm *tm; \
-		char ts_buf[32]; \
-		char tenant[TENANT_MAX + 1]; \
-		if (stream == debug_log && !DEBUG_LEVEL) \
-			break; \
-		secs = time(NULL); \
-		tm = localtime(&secs); \
-		get_tenant(env_vars.host, tenant); \
-		strftime(ts_buf, sizeof(ts_buf), "%F %T %z", tm); \
-		fprintf(stream, "[%s] %d %s %s: " fmt, ts_buf, getpid(), \
-				tenant, __func__, ##__VA_ARGS__); \
-		fflush(stream); \
-	} while (0)
+static inline void __d_fprintf(FILE *stream, const char *func, const char *fmt,
+			       ...)
+{
+	va_list ap;
+	char *buf = NULL;
+	time_t secs;
+	struct tm *tm;
+	char ts_buf[32];
+	char tenant[TENANT_MAX + 1];
+	int len;
+
+	if (stream == debug_log && !DEBUG_LEVEL)
+		return;
+
+	secs = time(NULL);
+	tm = localtime(&secs);
+
+	va_start(ap, fmt);
+	len = vasprintf(&buf, fmt, ap);
+	va_end(ap);
+
+	if (len == -1)
+		goto out_free;
+
+	get_tenant(env_vars.host, tenant);
+	strftime(ts_buf, sizeof(ts_buf), "%F %T %z", tm);
+
+	fprintf(stream, "[%s] %d %s %s: %s\n", ts_buf, getpid(), tenant, func,
+		buf);
+	fflush(stream);
+
+out_free:
+	free(buf);
+}
 
 /* Remap some FCGX_ functions for usability/readability */
 #define fcgx_p(fmt, ...)	FCGX_FPrintF(fcgx_out, fmt, ##__VA_ARGS__)
