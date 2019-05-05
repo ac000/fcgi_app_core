@@ -72,6 +72,7 @@ enum { SHA1, SHA256, SHA512 };
 	#undef __func__
 #endif
 
+extern struct env_vars env_vars;
 /*
  * Wrapper around fprintf(). It will prepend the text passed it with
  * [datestamp] pid function:
@@ -181,7 +182,6 @@ struct env_vars {
 	char *host;
 	char *query_string;
 };
-struct env_vars env_vars;
 
 /* Structure to hold information about uploaded files via POST */
 struct file_info {

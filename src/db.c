@@ -24,6 +24,8 @@
 #include "utils.h"
 #include "db.h"
 
+extern struct env_vars env_vars;
+
 /* Global MySQL connection handle */
 MYSQL *conn;
 

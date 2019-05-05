@@ -33,6 +33,7 @@
 #include "utils.h"
 
 extern struct user_session user_session;
+extern struct env_vars env_vars;
 
 /*
  * Check if the given IPv6 address belongs to the specified network.
