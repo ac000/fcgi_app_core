@@ -72,7 +72,60 @@ enum { SHA1, SHA256, SHA512 };
 	#undef __func__
 #endif
 
+/*
+ * Structure that defines a users session. The session is stored
+ * in a tokyocabinet database table inbetween requests.
+ */
+struct user_session {
+	char tenant[TENANT_MAX + 1];
+	unsigned long long sid;
+	unsigned int uid;
+	uint8_t capabilities;
+	char *username;
+	char *name;
+	time_t login_at;
+	time_t last_seen;
+	char origin_ip[IP_MAX + 1];
+	char *client_id;
+	char session_id[SID_LEN + 1];
+	char csrf_token[CSRF_LEN + 1];
+	bool restrict_ip;
+	char *user_hdr;
+};
+
+/*
+ * This structure maps to the environment variable list sent
+ * by the application. We don't store every item.
+ */
+struct env_vars {
+	char *request_uri;
+	char *request_method;
+	char *content_type;
+	off_t content_length;
+	char *http_cookie;
+	char *http_user_agent;
+	char *remote_addr;
+	int remote_port;
+	char *host;
+	char *query_string;
+};
+
+extern FCGX_Stream *fcgx_in;
+extern FCGX_Stream *fcgx_out;
+extern FCGX_Stream *fcgx_err;
+extern FCGX_ParamArray fcgx_envp;
+
+extern FILE *access_log;
+extern FILE *sql_log;
+extern FILE *error_log;
+extern FILE *debug_log;
+
+extern GList *u_files;
+extern GList *avars;
+extern GHashTable *qvars;
+
 extern struct env_vars env_vars;
+
 /*
  * Wrapper around fprintf(). It will prepend the text passed it with
  * [datestamp] pid function:
@@ -144,57 +197,5 @@ static inline char *make_mysql_safe_stringl(MYSQL *dbconn, const char *string)
 {
 	return __make_mysql_safe_string(dbconn, string);
 }
-
-/*
- * Structure that defines a users session. The session is stored
- * in a tokyocabinet database table inbetween requests.
- */
-struct user_session {
-	char tenant[TENANT_MAX + 1];
-	unsigned long long sid;
-	unsigned int uid;
-	uint8_t capabilities;
-	char *username;
-	char *name;
-	time_t login_at;
-	time_t last_seen;
-	char origin_ip[IP_MAX + 1];
-	char *client_id;
-	char session_id[SID_LEN + 1];
-	char csrf_token[CSRF_LEN + 1];
-	bool restrict_ip;
-	char *user_hdr;
-};
-
-/*
- * This structure maps to the environment variable list sent
- * by the application. We don't store every item.
- */
-struct env_vars {
-	char *request_uri;
-	char *request_method;
-	char *content_type;
-	off_t content_length;
-	char *http_cookie;
-	char *http_user_agent;
-	char *remote_addr;
-	int remote_port;
-	char *host;
-	char *query_string;
-};
-
-extern FCGX_Stream *fcgx_in;
-extern FCGX_Stream *fcgx_out;
-extern FCGX_Stream *fcgx_err;
-extern FCGX_ParamArray fcgx_envp;
-
-extern FILE *access_log;
-extern FILE *sql_log;
-extern FILE *error_log;
-extern FILE *debug_log;
-
-extern GList *u_files;
-extern GList *avars;
-extern GHashTable *qvars;
 
 #endif /* _COMMON_H_ */
