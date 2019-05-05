@@ -164,7 +164,6 @@ struct user_session {
 	bool restrict_ip;
 	char *user_hdr;
 };
-struct user_session user_session;
 
 /*
  * This structure maps to the environment variable list sent

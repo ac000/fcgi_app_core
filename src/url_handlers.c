@@ -37,6 +37,8 @@
 #include "audit.h"
 #include "csrf.h"
 
+struct user_session user_session;
+
 /*
  * /login/
  *

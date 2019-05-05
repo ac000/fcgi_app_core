@@ -32,6 +32,8 @@
 #include "common.h"
 #include "utils.h"
 
+extern struct user_session user_session;
+
 /*
  * Check if the given IPv6 address belongs to the specified network.
  *

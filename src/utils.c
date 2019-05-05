@@ -38,6 +38,8 @@
 #include "common.h"
 #include "utils.h"
 
+extern struct user_session user_session;
+
 struct quark {
 	GHashTable *q;
 	int last;
