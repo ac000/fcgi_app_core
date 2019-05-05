@@ -71,6 +71,22 @@ enum { SHA1, SHA256, SHA512 };
 /* Macro to check if a char *variable is set, i.e a len > 0 */
 #define IS_SET(var)	((strlen(var) > 0) ? 1 : 0)
 
+/* Remap some FCGX_ functions for usability/readability */
+#define fcgx_p(fmt, ...)	FCGX_FPrintF(fcgx_out, fmt, ##__VA_ARGS__)
+#define fcgx_vp(fmt, valist)	FCGX_VFPrintF(fcgx_out, fmt, valist)
+#define fcgx_ps(buf, size)	FCGX_PutStr(buf, size, fcgx_out)
+#define fcgx_param(name)	FCGX_GetParam(name, fcgx_envp)
+#define fcgx_putc(c)		FCGX_PutChar(c, fcgx_out)
+#define fcgx_puts(s)		FCGX_PutS(s, fcgx_out)
+#define fcgx_gs(buf, size)	FCGX_GetStr(buf, size, fcgx_in)
+
+/* Nicer names for the libflate stuff */
+#define lf_set_tmpl		flateSetFile
+#define lf_set_var		flateSetVar
+#define lf_set_row		flateDumpTableLine
+#define lf_send			flatePrint
+#define lf_free			flateFreeMem
+
 /* Unbreak __func__ by my_global.h */
 #ifdef __func__
 	#undef __func__
@@ -177,22 +193,6 @@ static inline void __d_fprintf(FILE *stream, const char *func, const char *fmt,
 out_free:
 	free(buf);
 }
-
-/* Remap some FCGX_ functions for usability/readability */
-#define fcgx_p(fmt, ...)	FCGX_FPrintF(fcgx_out, fmt, ##__VA_ARGS__)
-#define fcgx_vp(fmt, valist)	FCGX_VFPrintF(fcgx_out, fmt, valist)
-#define fcgx_ps(buf, size)	FCGX_PutStr(buf, size, fcgx_out)
-#define fcgx_param(name)	FCGX_GetParam(name, fcgx_envp)
-#define fcgx_putc(c)		FCGX_PutChar(c, fcgx_out)
-#define fcgx_puts(s)		FCGX_PutS(s, fcgx_out)
-#define fcgx_gs(buf, size)	FCGX_GetStr(buf, size, fcgx_in)
-
-/* Nicer names for the libflate stuff */
-#define lf_set_tmpl		flateSetFile
-#define lf_set_var		flateSetVar
-#define lf_set_row		flateDumpTableLine
-#define lf_send			flatePrint
-#define lf_free			flateFreeMem
 
 /*
  * Wrapper around mysql_real_escape_string()
