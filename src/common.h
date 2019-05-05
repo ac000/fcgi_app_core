@@ -183,14 +183,6 @@ struct env_vars {
 	char *query_string;
 };
 
-/* Structure to hold information about uploaded files via POST */
-struct file_info {
-	char orig_file_name[NAME_MAX + 1];
-	char temp_file_name[PATH_MAX];
-	char *name;
-	char *mime_type;
-};
-
 extern FCGX_Stream *fcgx_in;
 extern FCGX_Stream *fcgx_out;
 extern FCGX_Stream *fcgx_err;

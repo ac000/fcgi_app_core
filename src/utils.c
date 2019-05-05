@@ -40,6 +40,14 @@
 
 extern struct user_session user_session;
 
+/* Structure to hold information about uploaded files via POST */
+struct file_info {
+	char orig_file_name[NAME_MAX + 1];
+	char temp_file_name[PATH_MAX];
+	char *name;
+	char *mime_type;
+};
+
 struct quark {
 	GHashTable *q;
 	int last;
