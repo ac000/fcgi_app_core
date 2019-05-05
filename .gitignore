@@ -1,4 +1,2 @@
 *.swp
-*.o
-src/app
-src/libctemplate
+*~
