@@ -4,8 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- *		 2014 - 2016, 2019	Andrew Clayton
- *					<andrew@digital-domain.net>
+ *		 2014 - 2016, 2019 - 2020	Andrew Clayton
+ *						<andrew@digital-domain.net>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
@@ -295,9 +295,11 @@ void free_u_files(void)
 	size = g_list_length(u_files);
 	for (i = 0; i < size; i++) {
 		struct file_info *file_info = g_list_nth_data(u_files, i);
+
 		unlink(file_info->temp_file_name);
 		free(file_info->name);
 		free(file_info->mime_type);
+		free(file_info);
 	}
 	g_list_free(u_files);
 }
