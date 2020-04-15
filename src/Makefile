@@ -5,10 +5,9 @@ $(shell mkdir -p $(DEPDIR) >/dev/null)
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
 
 CC	= gcc
-CFLAGS	= -Wall -Wextra -Wdeclaration-after-statement -Wvla -std=c99 -O2 -g -Wp,-D_FORTIFY_SOURCE=2 -D_FILE_OFFSET_BITS=64 -D_HAVE_FCGX -fexceptions -fstack-protector --param=ssp-buffer-size=4 -fPIC
+CFLAGS	= -Wall -Wextra -Wdeclaration-after-statement -Wvla -std=c99 -O2 -g -Wp,-D_FORTIFY_SOURCE=2 -D_FILE_OFFSET_BITS=64 -D_HAVE_FCGX -fexceptions -fstack-protector --param=ssp-buffer-size=4 -fPIC -I../../libflate $(shell pkg-config --cflags glib-2.0 gmime-2.6) $(shell mysql_config --cflags)
 LDFLAGS	= -Wl,-z,relro,-z,now,-z,defs,--as-needed -pie
 LIBS	= -L../../libflate $(shell pkg-config --libs glib-2.0 gmime-2.6) $(shell mysql_config --libs) -lm -lrt -lcrypt -lfcgi -lmhash -ltokyocabinet -lflate -pthread
-INCS	= -I../../libflate $(shell pkg-config --cflags glib-2.0 gmime-2.6) $(shell mysql_config --cflags)
 POSTCOMPILE = @mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d && touch $@
 
 sources  = $(wildcard *.c)
@@ -29,7 +28,7 @@ $(APPNAME): $(objects)
 %.o: %.c
 %.o: %.c $(DEPDIR)/%.d
 	@echo -e "  CC\t$@"
-	$(v)$(CC) $(DEPFLAGS) $(CFLAGS) $(INCS) -c -o $@ $<
+	$(v)$(CC) $(DEPFLAGS) $(CFLAGS) -c -o $@ $<
 	$(POSTCOMPILE)
 
 $(DEPDIR)/%.d: ;
