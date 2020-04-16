@@ -38,8 +38,6 @@
 #include "common.h"
 #include "utils.h"
 
-extern struct user_session user_session;
-
 /* Structure to hold information about uploaded files via POST */
 struct file_info {
 	char orig_file_name[NAME_MAX + 1];

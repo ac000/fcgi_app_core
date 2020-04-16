@@ -26,8 +26,6 @@
 #include "common.h"
 #include "utils.h"
 
-extern struct user_session user_session;
-
 /*
  * This will create a token for use in forms to help prevent against
  * CSRF attacks.

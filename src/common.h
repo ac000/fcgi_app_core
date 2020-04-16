@@ -144,6 +144,7 @@ extern GList *u_files;
 extern GList *avars;
 extern GHashTable *qvars;
 
+extern struct user_session user_session;
 extern struct env_vars env_vars;
 
 #define d_fprintf(stream, fmt, ...) \
