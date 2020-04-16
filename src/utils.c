@@ -76,7 +76,7 @@ static int quark_from_string(const char *str)
 
 	if (!quarks.q) {
 		quarks.q = g_hash_table_new_full(g_str_hash, g_str_equal,
-				g_free, NULL);
+						 g_free, NULL);
 		quarks.last = -1;
 	}
 
@@ -84,7 +84,7 @@ static int quark_from_string(const char *str)
 	if (!q) {
 		quarks.last++;
 		g_hash_table_insert(quarks.q, g_strdup(str),
-				GINT_TO_POINTER(quarks.last));
+				    GINT_TO_POINTER(quarks.last));
 
 		return quarks.last;
 	} else {
@@ -217,7 +217,7 @@ char *generate_hash(char *hash, int type)
 		 * seriously wrong. Log it and exit.
 		 */
 		d_fprintf(error_log, "Couldn't read sufficient data from "
-				"/dev/urandom\n");
+			  "/dev/urandom\n");
 		_exit(EXIT_FAILURE);
 	}
 
@@ -334,7 +334,7 @@ static void add_multipart_avar(const char *name, const char *value)
 	if (!ht) {
 		/* New array index, new hash table */
 		ht = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
-				g_free);
+					   g_free);
 		new = true;
 	}
 
@@ -359,7 +359,7 @@ static void add_multipart_var(const char *name, const char *value)
 	d_fprintf(debug_log, "Adding key: %s with value: %s\n", name, value);
 	if (!qvars)
 		qvars = g_hash_table_new_full(g_str_hash, g_str_equal,
-							g_free, g_free);
+					      g_free, g_free);
 	g_hash_table_replace(qvars, g_strdup(name), g_strdup(value));
 }
 
@@ -390,7 +390,7 @@ static void add_avar(const char *qvar)
 	if (!ht) {
 		/* New array index, new hash table */
 		ht = g_hash_table_new_full(g_str_hash, g_str_equal, free,
-				free);
+					   free);
 		new = true;
 	}
 
@@ -426,7 +426,7 @@ static void add_var(const char *qvar)
 
 	if (!qvars)
 		qvars = g_hash_table_new_full(g_str_hash, g_str_equal,
-				g_free, free);
+					      g_free, free);
 
 	string = strdupa(qvar);
 
@@ -490,7 +490,7 @@ static void process_mime_part(GMimeObject *parent __unused, GMimeObject *part,
 
 	dname = g_mime_content_disposition_get_parameter(disposition, "name");
 	dfname = g_mime_content_disposition_get_parameter(disposition,
-			"filename");
+							  "filename");
 	if (dfname) {
 		char temp_name[] = "/tmp/u_files/pgv-XXXXXX";
 		struct file_info *file_info;
@@ -505,12 +505,11 @@ static void process_mime_part(GMimeObject *parent __unused, GMimeObject *part,
 		file_info = malloc(sizeof(struct file_info));
 		memset(file_info, 0, sizeof(struct file_info));
 		snprintf(file_info->orig_file_name,
-				sizeof(file_info->orig_file_name), "%s",
-				dfname);
+			 sizeof(file_info->orig_file_name), "%s", dfname);
 		strcpy(file_info->temp_file_name, temp_name);
 		file_info->name = strdup(dname);
 		file_info->mime_type = strdup(g_mime_content_type_to_string(
-					content_type));
+								content_type));
 
 		stream = g_mime_stream_fs_new(fd);
 		content = g_mime_part_get_content_object((GMimePart *)part);
@@ -580,7 +579,8 @@ static void process_mime(void)
 	parser = g_mime_parser_new_with_stream(stream);
 	parts = g_mime_parser_construct_part(parser);
 	g_mime_multipart_foreach((GMimeMultipart *)parts,
-			(GMimeObjectForeachFunc)process_mime_part, NULL);
+				 (GMimeObjectForeachFunc)process_mime_part,
+				 NULL);
 
 	g_object_unref(stream);
 	g_object_unref(parser);
@@ -626,17 +626,18 @@ GHashTable *get_dbrow(MYSQL_RES *res)
 	MYSQL_FIELD *fields;
 	GHashTable *db_row;
 
-	db_row = g_hash_table_new_full(g_str_hash, g_str_equal,
-			g_free, g_free);
+	db_row = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+				       g_free);
 
 	num_fields = mysql_num_fields(res);
 	fields = mysql_fetch_fields(res);
 	row = mysql_fetch_row(res);
 	for (i = 0; i < num_fields; i++) {
-		d_fprintf(debug_log, "Adding key: %s with value: %s to "
-				"hash table\n", fields[i].name, row[i]);
+		d_fprintf(debug_log,
+			  "Adding key: %s with value: %s to hash table\n",
+			  fields[i].name, row[i]);
 		g_hash_table_insert(db_row, g_strdup(fields[i].name),
-				g_strdup(row[i]));
+				    g_strdup(row[i]));
 	}
 
 	return db_row;
@@ -711,7 +712,7 @@ void set_env_vars(void)
 
 	if (fcgx_param("HTTP_USER_AGENT"))
 		env_vars.http_user_agent = strdup(fcgx_param(
-					"HTTP_USER_AGENT"));
+							"HTTP_USER_AGENT"));
 	else
 		/*
 		 * In case it's (null), we still need at least an empty
@@ -722,7 +723,7 @@ void set_env_vars(void)
 	if (fcgx_param("HTTP_X_FORWARDED_FOR") &&
 	    IS_SET(fcgx_param("HTTP_X_FORWARDED_FOR")))
 		env_vars.remote_addr = strdup(fcgx_param(
-					"HTTP_X_FORWARDED_FOR"));
+						"HTTP_X_FORWARDED_FOR"));
 	else
 		env_vars.remote_addr = strdup(fcgx_param("REMOTE_ADDR"));
 
@@ -789,11 +790,11 @@ void send_activation_mail(const char *name, const char *address,
 	fputs("Your account has been created and awaits activation.\r\n", fp);
 	fputs("\r\n", fp);
 	fputs("Please follow the below url to complete your account setup."
-			"\r\n", fp);
+	      "\r\n", fp);
 	fputs("Note that this activation key is valid for 24 hours.\r\n", fp);
 	fputs("\r\n", fp);
 	fprintf(fp, "https://%s/activate_user/?key=%s\r\n", env_vars.host,
-			key);
+		key);
 
 	pclose(fp);
 }

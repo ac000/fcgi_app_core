@@ -4,8 +4,8 @@
  * Copyright (C) 2012		OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- *		 2014, 2016, 2019	Andrew Clayton
- *		 			<andrew@digital-domain.net>
+ *		 2014, 2016, 2019 - 2020	Andrew Clayton
+ *		 				<andrew@digital-domain.net>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
@@ -56,11 +56,12 @@ static MYSQL *__db_conn(int db_conn_type)
 
 	dbc = mysql_init(NULL);
 	ret = mysql_real_connect(dbc, DB_HOST, DB_USER, DB_PASS, DB_NAME,
-			DB_PORT_NUM, DB_SOCKET_NAME, DB_FLAGS);
+				 DB_PORT_NUM, DB_SOCKET_NAME, DB_FLAGS);
 
 	if (!ret) {
-		d_fprintf(error_log, "Failed to connect to database. Error: "
-				"%s\n", mysql_error(dbc));
+		d_fprintf(error_log,
+			  "Failed to connect to database. Error: %s\n",
+			  mysql_error(dbc));
 		switch (mysql_errno(dbc)) {
 		case ER_BAD_DB_ERROR:	/* unknown database */
 			send_page("templates/invalid.tmpl");
@@ -122,7 +123,7 @@ MYSQL_RES *__sql_query(MYSQL *dbconn, const char *func, const char *fmt, ...)
 		get_tenant(env_vars.host, tenant);
 		strftime(ts_buf, sizeof(ts_buf), "%F %T %z", tm);
 		fprintf(sql_log, "[%s] %d %s %s: %s\n", ts_buf,  getpid(),
-				tenant, func, sql);
+			tenant, func, sql);
 		fflush(sql_log);
 	}
 

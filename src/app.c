@@ -4,8 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- *		 2016, 2019	Andrew Clayton
- *		 		<andrew@digital-domain.net>
+ *		 2016, 2019 - 2020	Andrew Clayton
+ *					<andrew@digital-domain.net>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
@@ -163,32 +163,35 @@ static void dump_session_state(void)
 
 		tcmapiterinit(cols);
 
-		fprintf(debug_log, "\ttenant       : %s\n", tcmapget2(cols,
-					"tenant"));
-		fprintf(debug_log, "\tsid          : %s\n", tcmapget2(cols,
-					"sid"));
-		fprintf(debug_log, "\tuid          : %s\n", tcmapget2(cols,
-					"uid"));
+		fprintf(debug_log,
+			"\ttenant       : %s\n", tcmapget2(cols, "tenant"));
+		fprintf(debug_log,
+			"\tsid          : %s\n", tcmapget2(cols, "sid"));
+		fprintf(debug_log,
+			"\tuid          : %s\n", tcmapget2(cols, "uid"));
 		fprintf(debug_log, "\tcapabilities : %d\n", capabilities);
-		fprintf(debug_log, "\tusername     : %s\n", tcmapget2(cols,
-					"username"));
-		fprintf(debug_log, "\tname         : %s\n", tcmapget2(cols,
-					"name"));
-		fprintf(debug_log, "\tlogin_at     : %s\n", tcmapget2(cols,
-					"login_at"));
-		fprintf(debug_log, "\tlast_seen    : %s\n", tcmapget2(cols,
-					"last_seen"));
-		fprintf(debug_log, "\torigin_ip    : %s\n", tcmapget2(cols,
-					"origin_ip"));
-		fprintf(debug_log, "\tclient_id    : %s\n", tcmapget2(cols,
-					"client_id"));
-		fprintf(debug_log, "\tsession_id   : %s\n", tcmapget2(cols,
-					"session_id"));
-		fprintf(debug_log, "\tcsrf_token   : %s\n", tcmapget2(cols,
-					"csrf_token"));
-		fprintf(debug_log, "\trestrict_ip  : %s\n\n",
-				tcmapget2(cols, "restrict_ip")[0] == '1' ?
-				"true" : "false");
+		fprintf(debug_log,
+			"\tusername     : %s\n", tcmapget2(cols, "username"));
+		fprintf(debug_log,
+			"\tname         : %s\n", tcmapget2(cols, "name"));
+		fprintf(debug_log,
+			"\tlogin_at     : %s\n", tcmapget2(cols, "login_at"));
+		fprintf(debug_log,
+			"\tlast_seen    : %s\n", tcmapget2(cols, "last_seen"));
+		fprintf(debug_log,
+			"\torigin_ip    : %s\n", tcmapget2(cols, "origin_ip"));
+		fprintf(debug_log,
+			"\tclient_id    : %s\n", tcmapget2(cols, "client_id"));
+		fprintf(debug_log,
+			"\tsession_id   : %s\n", tcmapget2(cols,
+							   "session_id"));
+		fprintf(debug_log,
+			"\tcsrf_token   : %s\n", tcmapget2(cols,
+							   "csrf_token"));
+		fprintf(debug_log,
+			"\trestrict_ip  : %s\n\n",
+			tcmapget2(cols,
+				  "restrict_ip")[0] == '1' ?"true" : "false");
 		tcmapdel(cols);
 	}
 	tclistdel(res);

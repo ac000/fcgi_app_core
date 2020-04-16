@@ -4,8 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- * 		 2014, 2016, 2019	Andrew Clayton
- * 		 			<andrew@digital-domain.net>
+ * 		 2014, 2016, 2019 - 2020	Andrew Clayton
+ *						<andrew@digital-domain.net>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
@@ -70,28 +70,28 @@ static void generate_csrf_token(char *csrf_token)
 	primary_key_size = sprintf(pkbuf, "%ld", (long)tctdbgenuid(tdb));
 	snprintf(login_at, sizeof(login_at), "%ld", user_session.login_at);
 	snprintf(last_seen, sizeof(last_seen), "%ld",
-			user_session.last_seen);
+		 user_session.last_seen);
 	snprintf(uid, sizeof(uid), "%u", user_session.uid);
 	snprintf(sid, sizeof(sid), "%llu", user_session.sid);
 	snprintf(restrict_ip, sizeof(restrict_ip), "%d",
-			user_session.restrict_ip);
+		 user_session.restrict_ip);
 	snprintf(capabilities, sizeof(capabilities), "%u",
-			user_session.capabilities);
+		 user_session.capabilities);
 	generate_hash(csrf_token, SHA1);
 	cols = tcmapnew3("tenant", user_session.tenant,
-			"sid", sid,
-			"uid", uid,
-			"username", user_session.username,
-			"name", user_session.name,
-			"login_at", login_at,
-			"last_seen", last_seen,
-			"origin_ip", user_session.origin_ip,
-			"client_id", user_session.client_id,
-			"session_id", user_session.session_id,
-			"csrf_token", csrf_token,
-			"restrict_ip", restrict_ip,
-			"capabilities", capabilities,
-			NULL);
+			 "sid", sid,
+			 "uid", uid,
+			 "username", user_session.username,
+			 "name", user_session.name,
+			 "login_at", login_at,
+			 "last_seen", last_seen,
+			 "origin_ip", user_session.origin_ip,
+			 "client_id", user_session.client_id,
+			 "session_id", user_session.session_id,
+			 "csrf_token", csrf_token,
+			 "restrict_ip", restrict_ip,
+			 "capabilities", capabilities,
+			 NULL);
 	tctdbput(tdb, pkbuf, primary_key_size, cols);
 
 	tcmapdel(cols);

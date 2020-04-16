@@ -4,7 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- * 		 2014, 2019	Andrew Clayton <andrew@digital-domain.net>
+ * 		 2014, 2019 - 2020	Andrew Clayton
+ *					<andrew@digital-domain.net>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
  * and the GNU Affero General Public License version 3 (AGPL-3.0.txt)
@@ -97,7 +98,7 @@ static void logout(void)
 
 	qry = tctdbqrynew(tdb);
 	tctdbqryaddcond(qry, "session_id", TDBQCSTREQ,
-					user_session.session_id);
+			user_session.session_id);
 	res = tctdbqrysearch(qry);
 	rbuf = tclistval(res, 0, &rsize);
 	tctdbout(tdb, rbuf, strlen(rbuf));
@@ -110,8 +111,7 @@ static void logout(void)
 
 	/* Immediately expire the session cookies */
 	fcgx_p("Set-Cookie: session_id=deleted; "
-				"expires=Thu, 01 Jan 1970 00:00:01 GMT; "
-				"path=/; httponly\r\n");
+	       "expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/; httponly\r\n");
 	send_page("templates/logout.tmpl");
 }
 
@@ -228,12 +228,12 @@ out2:
 	free_u_files();
 	clock_gettime(CLOCK_REALTIME, &etp);
 	d_fprintf(access_log, "Got request from %s for %s (%s), %ums\n",
-				env_vars.remote_addr,
-				request_uri,
-				env_vars.request_method,
-				(unsigned int)((etp.tv_sec * 1000 +
-				etp.tv_nsec / NS_MSEC) -
-				(stp.tv_sec * 1000 + stp.tv_nsec / NS_MSEC)));
+		  env_vars.remote_addr,
+		  request_uri,
+		  env_vars.request_method,
+		  (unsigned int)((etp.tv_sec * 1000 +
+				  etp.tv_nsec / NS_MSEC) -
+				 (stp.tv_sec * 1000 + stp.tv_nsec / NS_MSEC)));
 	free_env_vars();
 	mysql_close(conn);
 }
