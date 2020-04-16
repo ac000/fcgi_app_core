@@ -91,7 +91,7 @@ static void logout(void)
 	const char *rbuf;
 
 	tdb = tctdbnew();
-	tctdbopen(tdb, SESSION_DB, TDBOWRITER);
+	tctdbopen(tdb, cfg->session_db, TDBOWRITER);
 
 	qry = tctdbqrynew(tdb);
 	tctdbqryaddcond(qry, "session_id", TDBQCSTREQ,

@@ -32,7 +32,7 @@
 #include <glib.h>
 
 #include "short_types.h"
-#include "app_config.h"
+#include "config.h"
 #include "db.h"
 #include "utils.h"
 
@@ -147,6 +147,8 @@ extern GHashTable *qvars;
 extern struct user_session user_session;
 extern struct env_vars env_vars;
 
+extern const struct cfg *cfg;
+
 #define d_fprintf(stream, fmt, ...) \
 	__d_fprintf(stream, (const char *)__func__, fmt, ##__VA_ARGS__)
 /*
@@ -171,7 +173,7 @@ static inline void __d_fprintf(FILE *stream, const char *func, const char *fmt,
 	char tenant[TENANT_MAX + 1];
 	int len;
 
-	if (stream == debug_log && !DEBUG_LEVEL)
+	if (stream == debug_log && cfg->debug_level == 0)
 		return;
 
 	secs = time(NULL);

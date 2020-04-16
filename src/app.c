@@ -29,8 +29,7 @@
 #include <fcgiapp.h>
 
 #include "common.h"
-#include "get_config.h"
-#include "app_config.h"
+#include "config.h"
 #include "url_handlers.h"
 #include "app.h"
 
@@ -42,7 +41,6 @@ static volatile sig_atomic_t dump_sessions;
 static volatile sig_atomic_t clear_sessions;
 static volatile sig_atomic_t rotate_log_files;
 
-char *log_dir = "/tmp";
 static char access_log_path[PATH_MAX];
 static char error_log_path[PATH_MAX];
 static char sql_log_path[PATH_MAX];
@@ -58,7 +56,7 @@ FILE *sql_log;
 FILE *error_log;
 FILE *debug_log;
 
-int debug_level = 0;
+const struct cfg *cfg;
 
 struct user_session user_session;
 struct env_vars env_vars;
@@ -76,8 +74,8 @@ struct env_vars env_vars;
  */
 static int get_nr_procs(void)
 {
-	if (NR_PROCS > 0)
-		return NR_PROCS;
+	if (cfg->nr_procs > 0)
+		return cfg->nr_procs;
 	else if (get_nprocs() > 0)
 		return get_nprocs();
 
@@ -152,7 +150,7 @@ static void dump_session_state(void)
 	int nres;
 
 	tdb = tctdbnew();
-	tctdbopen(tdb, SESSION_DB, TDBOREADER);
+	tctdbopen(tdb, cfg->session_db, TDBOREADER);
 
 	qry = tctdbqrynew(tdb);
 	res = tctdbqrysearch(qry);
@@ -273,7 +271,7 @@ static void clear_old_sessions(void)
 	snprintf(expiry, sizeof(expiry), "%ld", time(NULL) - SESSION_EXPIRY);
 
 	tdb = tctdbnew();
-	tctdbopen(tdb, SESSION_DB, TDBOWRITER);
+	tctdbopen(tdb, cfg->session_db, TDBOWRITER);
 
 	qry = tctdbqrynew(tdb);
 	tctdbqryaddcond(qry, "last_seen", TDBQCNUMLT, expiry);
@@ -351,21 +349,24 @@ static void init_logs(void)
 	} else {
 		int err;
 
-		err = access(log_dir, R_OK | W_OK | X_OK);
+		err = access(cfg->log_dir, R_OK | W_OK | X_OK);
 		if (err == -1)
 			exit(EXIT_FAILURE);
-		snprintf(access_log_path, PATH_MAX, "%s/access.log", LOG_DIR);
-		snprintf(error_log_path, PATH_MAX, "%s/error.log", LOG_DIR);
-		snprintf(sql_log_path, PATH_MAX, "%s/sql.log", LOG_DIR);
-		snprintf(debug_log_path, PATH_MAX, "%s/debug.log", LOG_DIR);
+		snprintf(access_log_path, PATH_MAX, "%s/access.log",
+			 cfg->log_dir);
+		snprintf(error_log_path, PATH_MAX, "%s/error.log",
+			 cfg->log_dir);
+		snprintf(sql_log_path, PATH_MAX, "%s/sql.log", cfg->log_dir);
+		snprintf(debug_log_path, PATH_MAX, "%s/debug.log",
+			 cfg->log_dir);
 	}
 
 	/* Create the log files as -rw-r----- */
 	smask = umask(0027);
-	access_log = fopen(ACCESS_LOG, "a");
-	error_log = fopen(ERROR_LOG, "a");
-	sql_log = fopen(SQL_LOG, "a");
-	debug_log = fopen(DEBUG_LOG, "a");
+	access_log = fopen(access_log_path, "a");
+	error_log = fopen(error_log_path, "a");
+	sql_log = fopen(sql_log_path, "a");
+	debug_log = fopen(debug_log_path, "a");
 	umask(smask);
 
 	/* Make stderr point to the error_log */
@@ -454,8 +455,8 @@ int main(int argc __unused, char **argv)
 	/* Used by set_proc_title() */
 	rargv = argv;
 
-	ret = get_config(argv[1]);
-	if (ret == -1)
+	cfg = get_config(argv[1]);
+	if (!cfg)
 		exit(EXIT_FAILURE);
 
 	/* Set the log paths and open them */
