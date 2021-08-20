@@ -87,11 +87,6 @@ enum { SHA1, SHA256, SHA512 };
 #define lf_send			flatePrint
 #define lf_free			flateFreeMem
 
-/* Unbreak __func__ by my_global.h */
-#ifdef __func__
-	#undef __func__
-#endif
-
 /*
  * Structure that defines a users session. The session is stored
  * in a tokyocabinet database table inbetween requests.
