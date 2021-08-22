@@ -314,10 +314,10 @@ static void *log_utmp_host(void *arg)
 	getnameinfo(res->ai_addr, res->ai_addrlen, host, NI_MAXHOST, NULL, 0,
 		    0);
 
-	db = db_conn_local();
-	hostname = make_mysql_safe_stringl(db, host);
-	sql_queryl(db, "UPDATE utmp SET hostname = '%s' WHERE sid = %llu",
-		   hostname, ui->sid);
+	db = db_conn();
+	hostname = make_mysql_safe_string(host);
+	sql_query("UPDATE utmp SET hostname = '%s' WHERE sid = %llu",
+			hostname, ui->sid);
 	mysql_close(db);
 	free(hostname);
 	free(ui);
