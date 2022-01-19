@@ -4,7 +4,8 @@
  * Copyright (C) 2012 - 2013	OpenTech Labs
  *				Andrew Clayton <andrew@digital-domain.net>
  *
- *		 2014 - 2016, 2019 - 2020	Andrew Clayton
+ *		 2014 - 2016, 2019 - 2020,
+ *		 2022				Andrew Clayton
  *						<andrew@digital-domain.net>
  *
  * This software is released under the MIT License (MIT-LICENSE.txt)
@@ -997,8 +998,12 @@ out_fail:
  */
 void send_template(Flate *f)
 {
-	fcgx_p("Cache-Control: private\r\n");
-	lf_send(f, "text/html", fcgx_out);
+	char *buf = flatePage(f);
+
+	fcgx_p("Cache-Control: private\r\n"
+	       "Content-Type: text/html\r\n\r\n"
+	       "%s", buf);
+	free(buf);
 	fflush(error_log);
 }
 

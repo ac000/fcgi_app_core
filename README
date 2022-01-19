@@ -34,12 +34,10 @@ Clone this repository
 
     $ git clone https://github.com/ac000/fcgi_app_core
 
-Then you need to bulld the fcgx branch of libflate (C HTML template library
-by Fabien Menemenlis)
+Then you need to bulld libflate (C HTML template library by Fabien Menemenlis)
 
     $ git clone https://github.com/ac000/libflate
     $ cd libflate
-    $ git checkout --track -b fcgx origin/fcgx
     $ make
 
 Go back into the fcgi_app_core repository and it should now build
