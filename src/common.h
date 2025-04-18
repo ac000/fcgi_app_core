@@ -40,6 +40,14 @@
 #define __maybe_unused		__attribute__((unused))
 #define __always_unused		__attribute__((unused))
 
+#ifndef __nonstring
+#if defined(__GNUC__) && !defined(__clang__)
+#define __nonstring		__attribute__((nonstring))
+#else
+#define __nonstring
+#endif
+#endif
+
 #define BUF_SIZE	4096
 #define SQL_MAX		8192
 #define ENTROPY_SIZE	   8
