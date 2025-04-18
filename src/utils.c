@@ -803,7 +803,7 @@ void send_activation_mail(const char *name, const char *address,
  */
 char *generate_password_hash(int hash_type, const char *password)
 {
-	static const char salt_chars[64] =
+	static const char salt_chars[64] __nonstring =
 	"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 	char salt[21];
 	int i;
